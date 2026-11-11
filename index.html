@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<meta name="theme-color" content="#4f46e5">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Trắc nghiệm">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Trắc nghiệm JSON</title>
+<style>
+  :root{
+    --bg:#f3f4f8; --card:#ffffff; --text:#1f2333; --muted:#6b7085; --line:#e4e6ee;
+    --pri:#4f46e5; --pri2:#6366f1; --pri-soft:#eef0ff;
+    --ok:#16a34a; --ok-soft:#dcfce7; --bad:#dc2626; --bad-soft:#fee2e2;
+    --warn:#d97706; --warn-soft:#fef3c7;
+    --radius:16px; --shadow:0 4px 18px rgba(30,35,60,.08);
+    --safe-b:env(safe-area-inset-bottom,0px); --safe-t:env(safe-area-inset-top,0px);
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --bg:#0f1220; --card:#191d2e; --text:#e8eaf3; --muted:#9aa0b8; --line:#2a2f45;
+      --pri:#818cf8; --pri2:#6366f1; --pri-soft:#232849;
+      --ok:#22c55e; --ok-soft:#12321f; --bad:#f87171; --bad-soft:#3a1717;
+      --warn:#fbbf24; --warn-soft:#3a2e10; --shadow:0 4px 18px rgba(0,0,0,.35);
+    }
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;height:100%}
+  body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    background:var(--bg);color:var(--text);font-size:16px;line-height:1.5;
+    -webkit-font-smoothing:antialiased;overscroll-behavior-y:contain}
+  button{font:inherit;color:inherit;cursor:pointer;border:none;background:none}
+  a{color:var(--pri)}
+  .hidden{display:none!important}
+  .screen{min-height:100dvh;display:flex;flex-direction:column;max-width:720px;margin:0 auto}
+
+  /* ---------- App bar ---------- */
+  .appbar{position:sticky;top:0;z-index:20;background:var(--card);
+    padding:calc(var(--safe-t) + 10px) 12px 10px;display:flex;align-items:center;gap:8px;
+    border-bottom:1px solid var(--line)}
+  .appbar h1{font-size:18px;margin:0;flex:1;font-weight:700}
+  .icon-btn{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:20px;flex:none}
+  .icon-btn:active{background:var(--pri-soft)}
+  .sync-dot{font-size:13px;font-weight:600;padding:5px 10px;border-radius:999px;background:var(--bg);color:var(--muted);white-space:nowrap}
+  .sync-dot.ok{background:var(--ok-soft);color:var(--ok)}
+  .sync-dot.busy{background:var(--pri-soft);color:var(--pri)}
+  .sync-dot.err{background:var(--bad-soft);color:var(--bad)}
+  .timer{font-variant-numeric:tabular-nums;font-weight:700;font-size:17px;padding:6px 12px;border-radius:999px;
+    background:var(--pri-soft);color:var(--pri);display:flex;align-items:center;gap:6px}
+  .timer.warn{background:var(--bad-soft);color:var(--bad);animation:pulse 1s infinite}
+  @keyframes pulse{50%{opacity:.6}}
+  .progress-txt{flex:1;text-align:center;font-weight:600;color:var(--muted);font-size:15px}
+  .pbar{height:4px;background:var(--line)}
+  .pbar>div{height:100%;background:linear-gradient(90deg,var(--pri2),var(--pri));width:0;transition:width .3s}
+
+  .content{flex:1;padding:16px 14px calc(var(--safe-b) + 110px)}
+  .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin-bottom:14px}
+
+  /* ---------- Home ---------- */
+  .hero{text-align:center;padding:6px 0 4px}
+  .hero .logo{font-size:40px}
+  .hero h2{margin:4px 0 2px;font-size:21px}
+  .hero p{margin:0;color:var(--muted);font-size:14px}
+  .drop{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+    border:2px dashed var(--pri);border-radius:var(--radius);padding:22px 14px;text-align:center;
+    background:var(--pri-soft);color:var(--pri);font-weight:600;cursor:pointer;transition:.2s}
+  .drop.over{transform:scale(1.02)}
+  .drop small{color:var(--muted);font-weight:400}
+  .drop .big{font-size:34px}
+  .src{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+  .src:last-child{border-bottom:none}
+  .src .nm{flex:1;min-width:0}
+  .src .nm b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:15px}
+  .src .nm span{font-size:13px;color:var(--muted)}
+  .src.special .nm b{color:var(--bad)}
+  .src .rm{color:var(--muted);font-size:18px;width:36px;height:36px;flex:none}
+  .ck{position:relative;width:26px;height:26px;flex:none}
+  .ck input{opacity:0;position:absolute;inset:0;margin:0;cursor:pointer}
+  .ck span{position:absolute;inset:0;border-radius:8px;border:2px solid var(--line);pointer-events:none;transition:.15s;display:grid;place-items:center;color:#fff;font-size:15px;font-weight:800}
+  .ck input:checked+span{background:var(--pri);border-color:var(--pri)}
+  .ck input:checked+span::after{content:"✓"}
+  .sec-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin:0 0 8px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .sec-title a,.sec-title button{text-transform:none;letter-spacing:0;font-weight:600;color:var(--pri);font-size:13px}
+  .row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+  .row:last-child{border-bottom:none}
+  .row label{flex:1}
+  .row small{display:block;color:var(--muted);font-size:12.5px}
+  .num,.txt{padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text);font:inherit}
+  .num{width:84px;text-align:center}
+  .txt{width:100%}
+  .switch{position:relative;width:50px;height:30px;flex:none}
+  .switch input{opacity:0;width:0;height:0}
+  .switch span{position:absolute;inset:0;background:var(--line);border-radius:999px;transition:.2s}
+  .switch span::after{content:"";position:absolute;width:24px;height:24px;left:3px;top:3px;background:#fff;border-radius:50%;
+    transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+  .switch input:checked+span{background:var(--pri)}
+  .switch input:checked+span::after{transform:translateX(20px)}
+  .empty{color:var(--muted);text-align:center;font-size:14px;padding:6px 0}
+  .note{font-size:13.5px;color:var(--muted);margin:0 0 10px}
+  details.help summary{cursor:pointer;font-weight:600}
+  details.help pre{background:var(--bg);padding:10px;border-radius:10px;overflow:auto;font-size:12.5px;white-space:pre-wrap;word-break:break-word}
+  details.help p,details.help li{font-size:14px;color:var(--muted)}
+  details.help ol{padding-left:20px;margin:8px 0}
+  .bank-num{font-size:30px;font-weight:800;color:var(--bad);line-height:1}
+  .bank-top{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+  .bank-top p{margin:0;font-size:13.5px;color:var(--muted)}
+  .hist{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
+  .hist:last-child{border-bottom:none}
+  .hist .pct{width:52px;text-align:center;font-weight:800;border-radius:10px;padding:6px 0;flex:none}
+  .hist .pct.g{background:var(--ok-soft);color:var(--ok)}
+  .hist .pct.m{background:var(--warn-soft);color:var(--warn)}
+  .hist .pct.b{background:var(--bad-soft);color:var(--bad)}
+  .hist .nm{flex:1;min-width:0}
+  .hist .nm b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .hist .nm span{color:var(--muted);font-size:12.5px}
+  .sync-line{display:flex;align-items:center;gap:8px;font-size:14px;margin-bottom:12px}
+  .sync-line i{width:10px;height:10px;border-radius:50%;background:var(--muted);flex:none}
+  .sync-line.ok i{background:var(--ok)} .sync-line.busy i{background:var(--pri);animation:pulse 1s infinite} .sync-line.err i{background:var(--bad)}
+  .sync-line.err{color:var(--bad)}
+
+  .btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:15px 16px;border-radius:14px;
+    font-weight:700;font-size:16px;transition:transform .1s, opacity .2s}
+  .btn.sm{padding:11px 12px;font-size:14.5px;border-radius:12px}
+  .btn:active{transform:scale(.98)}
+  .btn:disabled{opacity:.45;pointer-events:none}
+  .btn-pri{background:linear-gradient(135deg,var(--pri2),var(--pri));color:#fff;box-shadow:0 6px 16px rgba(79,70,229,.3)}
+  .btn-soft{background:var(--pri-soft);color:var(--pri)}
+  .btn-ok{background:var(--ok);color:#fff}
+  .btn-bad{background:var(--bad-soft);color:var(--bad)}
+  .btn-line{background:var(--card);border:1px solid var(--line)}
+  .stack{display:flex;flex-direction:column;gap:10px}
+  .hrow{display:flex;gap:8px}
+  .hrow>*{flex:1}
+  .bottom-fixed{position:fixed;left:0;right:0;bottom:0;z-index:20;padding:12px 14px calc(var(--safe-b) + 12px);
+    background:linear-gradient(to top,var(--bg) 70%,transparent)}
+  .bottom-fixed>div{max-width:720px;margin:0 auto}
+  .resume{border:2px solid var(--pri)}
+  .resume .meta{color:var(--muted);font-size:14px;margin:2px 0 12px}
+
+  /* ---------- Quiz ---------- */
+  .topwrap{position:sticky;top:0;z-index:20;background:var(--card);border-bottom:1px solid var(--line);box-shadow:0 2px 10px rgba(30,35,60,.06)}
+  .topwrap .appbar{position:static;border-bottom:none}
+  .topwrap .chips{padding:8px 14px;margin:0}
+  .qcard{scroll-margin-top:125px;border-left:5px solid transparent}
+  .qcard .fb{scroll-margin-bottom:100px}
+  .qcard.is-ok{border-left-color:var(--ok)}
+  .qcard.is-bad{border-left-color:var(--bad)}
+  .list-end{text-align:center;color:var(--muted);font-size:14px;padding:10px 0 20px}
+  .chips{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+  .chip{padding:5px 12px;border-radius:999px;font-size:13.5px;font-weight:700}
+  .chip.ok{background:var(--ok-soft);color:var(--ok)}
+  .chip.bad{background:var(--bad-soft);color:var(--bad)}
+  .chip.mu{background:var(--card);color:var(--muted);border:1px solid var(--line)}
+  .q-head{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+  .q-no{font-weight:800;color:var(--pri);font-size:15px}
+  .badge{font-size:12px;padding:3px 9px;border-radius:999px;background:var(--pri-soft);color:var(--pri);font-weight:600}
+  .badge.tf{background:var(--warn-soft);color:var(--warn)}
+  .badge.bk{background:var(--bad-soft);color:var(--bad)}
+  .q-text{font-size:18px;font-weight:600;line-height:1.5;margin:0 0 16px;white-space:pre-wrap;word-break:break-word}
+  .opts{display:flex;flex-direction:column;gap:10px}
+  .opt{display:flex;align-items:flex-start;gap:12px;text-align:left;width:100%;padding:14px;border-radius:14px;
+    border:2px solid var(--line);background:var(--card);transition:border-color .15s, background .15s, transform .1s;font-size:16px}
+  .opt:active{transform:scale(.985)}
+  .opt .lt{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:14px;
+    background:var(--bg);color:var(--muted);transition:.15s}
+  .opt .tx{flex:1;padding-top:3px;word-break:break-word}
+  .opt.locked{pointer-events:none}
+  .opt.correct{border-color:var(--ok);background:var(--ok-soft)}
+  .opt.correct .lt{background:var(--ok);color:#fff}
+  .opt.wrong{border-color:var(--bad);background:var(--bad-soft);animation:shake .35s}
+  .opt.wrong .lt{background:var(--bad);color:#fff}
+  .opt.dim{opacity:.55}
+  @keyframes shake{20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
+  .tf-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .tf-grid .opt{justify-content:center;align-items:center;font-weight:700;padding:18px 10px}
+  .tf-grid .opt .tx{flex:none;padding:0}
+  .hint-btn{margin-top:14px;font-size:14px;color:var(--warn);font-weight:600;padding:6px 0}
+  .hint{margin-top:8px;padding:10px 12px;border-radius:12px;background:var(--warn-soft);color:var(--warn);font-size:14px}
+  .fb{margin-top:16px;border-radius:14px;padding:14px;animation:fadeUp .25s}
+  .fb.ok{background:var(--ok-soft);border-left:5px solid var(--ok)}
+  .fb.bad{background:var(--bad-soft);border-left:5px solid var(--bad)}
+  .fb .t{font-weight:800;font-size:16px;margin-bottom:4px}
+  .fb.ok .t{color:var(--ok)} .fb.bad .t{color:var(--bad)}
+  .fb .topic{font-size:13px;color:var(--muted);margin-bottom:6px;font-style:italic}
+  .fb .ex{white-space:pre-wrap;word-break:break-word;font-size:15px}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  .navbar{display:grid;grid-template-columns:54px 1fr 1fr 54px;gap:8px}
+  .navbar .btn{padding:14px 6px;font-size:15px}
+  .navbar .arrow{font-size:22px;padding:0;height:52px}
+
+  /* ---------- Sheet (grid) ---------- */
+  .overlay{position:fixed;inset:0;background:rgba(10,12,25,.5);z-index:40;display:flex;align-items:flex-end;justify-content:center;
+    animation:fade .2s}
+  @keyframes fade{from{opacity:0}}
+  .sheet{background:var(--card);width:100%;max-width:720px;max-height:80dvh;border-radius:22px 22px 0 0;
+    padding:10px 16px calc(var(--safe-b) + 16px);display:flex;flex-direction:column;animation:up .25s}
+  @keyframes up{from{transform:translateY(100%)}}
+  .sheet .grab{width:44px;height:5px;border-radius:9px;background:var(--line);margin:0 auto 10px}
+  .sheet h3{margin:0 0 6px;font-size:17px}
+  .legend{display:flex;gap:12px;font-size:12.5px;color:var(--muted);margin-bottom:10px;flex-wrap:wrap}
+  .legend i{display:inline-block;width:12px;height:12px;border-radius:4px;vertical-align:-1px;margin-right:4px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(46px,1fr));gap:8px;overflow:auto;padding:2px 2px 6px}
+  .cell{height:46px;border-radius:12px;background:var(--bg);font-weight:700;font-size:14px;border:2px solid transparent}
+  .cell.ok{background:var(--ok);color:#fff}
+  .cell.bad{background:var(--bad);color:#fff}
+  .cell.cur{border-color:var(--pri)}
+
+  /* ---------- Result ---------- */
+  .ring{width:170px;height:170px;border-radius:50%;margin:8px auto 10px;display:grid;place-items:center;
+    background:conic-gradient(var(--ok) calc(var(--p)*1%), var(--line) 0)}
+  .ring>div{width:136px;height:136px;border-radius:50%;background:var(--card);display:grid;place-items:center;text-align:center}
+  .ring b{font-size:36px;line-height:1}
+  .ring span{font-size:13px;color:var(--muted)}
+  .verdict{text-align:center;font-size:18px;font-weight:700;margin-bottom:4px}
+  .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+  .stat{border-radius:14px;padding:12px;text-align:center}
+  .stat b{display:block;font-size:24px}
+  .stat span{font-size:13px}
+  .stat.ok{background:var(--ok-soft);color:var(--ok)}
+  .stat.bad{background:var(--bad-soft);color:var(--bad)}
+  .stat.mu{background:var(--bg);color:var(--muted)}
+  .stat.pr{background:var(--pri-soft);color:var(--pri)}
+  .combo{border:2px dashed var(--pri)}
+
+  /* ---------- Review ---------- */
+  .tabs{display:flex;background:var(--card);border-radius:12px;padding:4px;gap:4px;margin-bottom:14px;box-shadow:var(--shadow)}
+  .tabs button{flex:1;padding:9px;border-radius:9px;font-weight:600;font-size:14px;color:var(--muted)}
+  .tabs button.on{background:var(--pri);color:#fff}
+  .rv .q-text{font-size:16px;margin-bottom:10px}
+  .rv .ans{font-size:14.5px;padding:8px 10px;border-radius:10px;margin-bottom:6px}
+  .rv .ans.ok{background:var(--ok-soft);color:var(--ok)}
+  .rv .ans.bad{background:var(--bad-soft);color:var(--bad)}
+  .rv .ans.mu{background:var(--bg);color:var(--muted)}
+  .rv .ex{font-size:14.5px;white-space:pre-wrap;margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
+  .rv .unbank{margin-top:10px;font-size:13.5px;color:var(--muted);font-weight:600}
+
+  /* ---------- Toast / modal ---------- */
+  .toast{position:fixed;left:50%;top:calc(var(--safe-t) + 70px);transform:translateX(-50%);z-index:60;
+    background:#1f2333;color:#fff;padding:10px 18px;border-radius:999px;font-size:14px;font-weight:600;
+    box-shadow:0 8px 24px rgba(0,0,0,.25);animation:fadeUp .2s;max-width:90vw;text-align:center}
+  .modal{background:var(--card);border-radius:20px;padding:20px;width:calc(100% - 32px);max-width:420px;margin:auto;animation:fadeUp .2s}
+  .modal h3{margin:0 0 6px}
+  .modal p{margin:0 0 16px;color:var(--muted)}
+  .modal .acts{display:flex;gap:10px}
+  .overlay.center{align-items:center}
+</style>
+</head>
+<body>
+
+<!-- ================= HOME ================= -->
+<section id="home" class="screen">
+  <div class="appbar"><h1>📝 Trắc nghiệm JSON</h1><span class="sync-dot hidden" id="syncDot"></span></div>
+  <div class="content">
+    <div class="hero">
+      <div class="logo">🎯</div>
+      <h2>Tạo bộ đề từ file JSON</h2>
+      <p>File đã tải được lưu lại — lần sau mở app vẫn còn</p>
+    </div>
+
+    <div id="resumeCard" class="card resume hidden" style="margin-top:14px">
+      <b>⏸ Bài đang làm dở</b>
+      <div class="meta" id="resumeMeta"></div>
+      <div class="hrow">
+        <button class="btn btn-pri" id="resumeBtn" style="flex:3">▶ Tiếp tục</button>
+        <button class="btn btn-line" id="discardBtn" style="flex:1">Huỷ</button>
+      </div>
+    </div>
+
+    <label class="drop" id="drop" style="margin:16px 0 14px">
+      <span class="big">📂</span>
+      <span>Chạm để tải file JSON lên</span>
+      <small>Chọn được nhiều file • hoặc kéo thả vào đây</small>
+      <input type="file" id="fileInput" accept=".json,application/json,text/plain" multiple hidden>
+    </label>
+
+    <div class="card">
+      <p class="sec-title"><span>📚 Thư viện đề <span id="libCount"></span></span><button id="selAllBtn">Chọn tất cả</button></p>
+      <div id="srcList"><div class="empty">Chưa có file nào</div></div>
+    </div>
+
+    <div class="card">
+      <p class="sec-title"><span>📕 Sổ câu sai</span><button id="bankViewBtn">Xem sổ</button></p>
+      <div class="bank-top">
+        <div class="bank-num" id="bankNum">0</div>
+        <p>câu đang trong sổ. Mỗi câu làm sai sẽ tự vào sổ, và tự rời sổ khi bạn làm đúng <b>2 lần liên tiếp</b>.</p>
+      </div>
+      <div class="row" style="padding-top:0"><label for="optIncBank">Gộp sổ câu sai vào bài làm<small>Trộn chung với các đề đang chọn ở trên</small></label>
+        <span class="switch"><input type="checkbox" id="optIncBank"><span></span></span></div>
+      <div class="hrow" style="margin-top:10px">
+        <button class="btn btn-bad sm" id="bankPracticeBtn">🔁 Luyện riêng câu sai</button>
+        <button class="btn btn-line sm" id="bankClearBtn" style="flex:.5">Xoá sổ</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <p class="sec-title">⚙️ Tuỳ chọn</p>
+      <div class="row"><label for="optShuffleQ">Xáo trộn thứ tự câu hỏi</label>
+        <span class="switch"><input type="checkbox" id="optShuffleQ"><span></span></span></div>
+      <div class="row"><label for="optShuffleA">Xáo trộn đáp án<small>Đảo vị trí A/B/C/D của câu nhiều lựa chọn</small></label>
+        <span class="switch"><input type="checkbox" id="optShuffleA"><span></span></span></div>
+      <div class="row"><label for="optLimit">Giới hạn thời gian (phút)<small>0 = không giới hạn, đồng hồ đếm lên</small></label>
+        <input type="number" class="num" id="optLimit" min="0" max="600" value="0" inputmode="numeric"></div>
+      <div class="row"><label for="optCount">Số câu tối đa<small>0 = lấy tất cả</small></label>
+        <input type="number" class="num" id="optCount" min="0" value="0" inputmode="numeric"></div>
+    </div>
+
+    <div class="card" id="syncCard">
+      <p class="sec-title">☁️ Đồng bộ giữa các máy</p>
+      <div id="syncOff">
+        <p class="note">Đồng bộ thư viện đề, bài đang làm, sổ câu sai và lịch sử qua <b>GitHub Gist riêng tư</b> của bạn. Dán cùng một token trên mọi máy.</p>
+        <input type="password" class="txt" id="tokenInput" placeholder="Dán GitHub token (ghp_...)" autocomplete="off">
+        <button class="btn btn-pri sm" id="connectBtn" style="margin-top:10px">🔗 Kết nối</button>
+        <details class="help" style="margin-top:12px">
+          <summary>Cách lấy token (làm 1 lần)</summary>
+          <ol>
+            <li>Đăng nhập GitHub, mở <a href="https://github.com/settings/tokens/new?scopes=gist&description=Trac%20nghiem%20JSON" target="_blank" rel="noopener">trang tạo token</a> (đã chọn sẵn quyền <b>gist</b>).</li>
+            <li>Mục <b>Expiration</b> chọn <b>No expiration</b>.</li>
+            <li>Kéo xuống bấm <b>Generate token</b>, sao chép mã bắt đầu bằng <code>ghp_</code>.</li>
+            <li>Dán vào ô trên và bấm Kết nối. Trên máy khác dán đúng mã này.</li>
+          </ol>
+          <p>Token chỉ lưu trên máy của bạn, và chỉ có quyền đọc/ghi Gist. Dữ liệu nằm trong một Gist bí mật tên <code>json-quiz-data.json</code>.</p>
+        </details>
+      </div>
+      <div id="syncOn" class="hidden">
+        <div class="sync-line" id="syncLine"><i></i><span id="syncMsg">Đã kết nối</span></div>
+        <div class="hrow">
+          <button class="btn btn-soft sm" id="syncNowBtn">🔄 Đồng bộ ngay</button>
+          <button class="btn btn-line sm" id="disconnectBtn" style="flex:.6">Ngắt kết nối</button>
+        </div>
+      </div>
+      <div class="hrow" style="margin-top:12px;padding-top:12px;border-top:1px solid var(--line)">
+        <button class="btn btn-line sm" id="exportBtn">⬇ Xuất sao lưu</button>
+        <button class="btn btn-line sm" id="importBtn">⬆ Nhập sao lưu</button>
+        <input type="file" id="importInput" accept=".json,application/json" hidden>
+      </div>
+    </div>
+
+    <div class="card" id="histCard">
+      <p class="sec-title"><span>🕘 Lịch sử làm bài</span><button id="histClearBtn">Xoá</button></p>
+      <div id="histList"><div class="empty">Chưa có lần làm bài nào</div></div>
+    </div>
+
+    <details class="card help">
+      <summary>ℹ️ Định dạng file JSON hỗ trợ</summary>
+      <p>Mỗi câu là một mảng:</p>
+      <pre>// Câu nhiều lựa chọn (loại 0)
+[0, "Nội dung câu hỏi", "Đáp án A|Đáp án B|Đáp án C|Đáp án D", 1, "Gợi ý/chủ đề", "Giải thích"]
+// → số 1 là vị trí đáp án đúng (tính từ 0: 0=A, 1=B, 2=C, 3=D)
+
+// Câu Đúng/Sai (loại 1)
+[1, "Mệnh đề", 0, "Gợi ý/chủ đề", "Giải thích"]
+// → 1 = Đúng, 0 = Sai</pre>
+      <p>Cũng hỗ trợ dạng object: <code>{"question": "...", "options": [...], "answer": 0, "explanation": "..."}</code></p>
+    </details>
+  </div>
+  <div class="bottom-fixed"><div>
+    <button class="btn btn-pri" id="startBtn" disabled>🚀 Bắt đầu làm bài</button>
+  </div></div>
+</section>
+
+<!-- ================= QUIZ ================= -->
+<section id="quiz" class="screen hidden">
+  <div class="topwrap" id="quizTop">
+  <div class="appbar">
+    <button class="icon-btn" id="quitBtn" title="Thoát">✕</button>
+    <div class="progress-txt" id="progTxt">Câu 1/1</div>
+    <div class="timer" id="timer">⏱ <span id="timerTxt">00:00</span></div>
+    <button class="icon-btn" id="gridBtn" title="Danh sách câu">▦</button>
+  </div>
+  <div class="pbar"><div id="pbar"></div></div>
+  <div class="chips">
+    <span class="chip ok" id="cOk">✔ 0</span>
+    <span class="chip bad" id="cBad">✘ 0</span>
+    <span class="chip mu" id="cLeft">Còn 0</span>
+  </div>
+  </div>
+  <div class="content" id="quizBody">
+    <div id="qList"></div>
+    <div class="list-end">— Hết danh sách câu hỏi —<br>Bấm <b>✔ Hoàn thành</b> để xem kết quả</div>
+  </div>
+  <div class="bottom-fixed"><div class="navbar">
+    <button class="btn btn-line arrow" id="prevBtn" title="Lên đầu">⤒</button>
+    <button class="btn btn-soft" id="shuffleBtn">🔀 Xáo trộn</button>
+    <button class="btn btn-ok" id="finishBtn">✔ Hoàn thành</button>
+    <button class="btn btn-line arrow" id="nextBtn" title="Tới câu chưa làm tiếp theo">⤓</button>
+  </div></div>
+</section>
+
+<!-- ================= RESULT ================= -->
+<section id="result" class="screen hidden">
+  <div class="appbar"><h1>📊 Kết quả</h1></div>
+  <div class="content">
+    <div class="card">
+      <div class="ring" id="ring" style="--p:0"><div><div><b id="rPct">0%</b><br><span id="rFrac">0/0 câu</span></div></div></div>
+      <div class="verdict" id="verdict"></div>
+      <div class="stats">
+        <div class="stat ok"><b id="sOk">0</b><span>Câu đúng</span></div>
+        <div class="stat bad"><b id="sBad">0</b><span>Câu sai</span></div>
+        <div class="stat mu"><b id="sSkip">0</b><span>Chưa làm</span></div>
+        <div class="stat pr"><b id="sTime">00:00</b><span>Thời gian</span></div>
+      </div>
+    </div>
+
+    <div class="card combo">
+      <p class="sec-title">📂 Nhập thêm tệp + câu làm sai</p>
+      <p class="note">Chọn file JSON mới, các câu sai của bài này sẽ được gộp chung vào bộ đề tiếp theo.</p>
+      <div class="row" style="padding-top:0"><label for="inclSkip">Gộp cả câu chưa làm</label>
+        <span class="switch"><input type="checkbox" id="inclSkip" checked><span></span></span></div>
+      <button class="btn btn-pri" id="comboBtn">📂 Chọn tệp để kết hợp</button>
+      <input type="file" id="comboInput" accept=".json,application/json,text/plain" multiple hidden>
+    </div>
+
+    <div class="stack">
+      <button class="btn btn-soft" id="reviewBtn">🔍 Xem lại đáp án & giải thích</button>
+      <button class="btn btn-bad" id="redoWrongBtn">🔁 Làm lại các câu sai</button>
+      <button class="btn btn-line" id="redoAllBtn">↻ Làm lại toàn bộ</button>
+      <button class="btn btn-line" id="homeBtn">🏠 Về trang chủ</button>
+    </div>
+  </div>
+</section>
+
+<!-- ================= REVIEW ================= -->
+<section id="review" class="screen hidden">
+  <div class="appbar">
+    <button class="icon-btn" id="rvBack">‹</button>
+    <h1 id="rvTitle">Xem lại</h1>
+  </div>
+  <div class="content">
+    <div class="tabs" id="rvTabs">
+      <button data-f="wrong" class="on">Sai & chưa làm</button>
+      <button data-f="all">Tất cả</button>
+    </div>
+    <div id="rvList"></div>
+  </div>
+</section>
+
+<script>
+(() => {
+'use strict';
+const $ = s => document.querySelector(s);
+const LETTERS = 'ABCDEFGHIJKLMNOP';
+const OLD_LS_KEY = 'jsonquiz_v1', LS_FALLBACK = 'jsonquiz_v2', SYNC_KEY = 'jsonquiz_sync';
+const DEF_OPTS = { shuffleQ: false, shuffleA: false, limit: 0, count: 0, incBank: false };
+
+/* Whole app state – this object is what gets saved locally and synced */
+let DB = { v: 2, lib: [], bank: {}, hist: [], S: null, sT: 0, opts: { ...DEF_OPTS }, optsT: 0 };
+let runStart = null;          // when the timer (re)started on this device
+let tick = null, rvFilter = 'wrong', rvMode = 'session', rvFrom = 'result';
+
+/* ================= Utils ================= */
+const now = () => Date.now();
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0; [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const fmt = sec => { sec = Math.max(0, Math.round(sec)); const h = sec / 3600 | 0, m = (sec % 3600) / 60 | 0, s = sec % 60;
+  return (h ? h + ':' + String(m).padStart(2,'0') : String(m).padStart(2,'0')) + ':' + String(s).padStart(2,'0'); };
+const fmtDate = t => { const d = new Date(t); return d.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' }) + ' ' + d.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }); };
+const hash = s => { let h = 0x811c9dc5; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193); } return (h >>> 0).toString(36); };
+const uid = () => now().toString(36) + Math.random().toString(36).slice(2, 7);
+function stable(v) {
+  if (Array.isArray(v)) return '[' + v.map(stable).join(',') + ']';
+  if (v && typeof v === 'object') return '{' + Object.keys(v).filter(k => v[k] !== undefined).sort().map(k => JSON.stringify(k) + ':' + stable(v[k])).join(',') + '}';
+  return JSON.stringify(v === undefined ? null : v);
+}
+function toast(msg, ms = 1800) {
+  const t = document.createElement('div'); t.className = 'toast'; t.textContent = msg;
+  document.body.appendChild(t); setTimeout(() => t.remove(), ms);
+}
+function confirmBox(title, text, okText = 'Đồng ý', cancelText = 'Huỷ') {
+  return new Promise(res => {
+    const o = document.createElement('div'); o.className = 'overlay center';
+    o.innerHTML = `<div class="modal"><h3>${esc(title)}</h3><p>${esc(text)}</p>
+      <div class="acts"><button class="btn btn-line" data-v="0">${esc(cancelText)}</button>
+      <button class="btn btn-pri" data-v="1">${esc(okText)}</button></div></div>`;
+    o.addEventListener('click', e => {
+      const b = e.target.closest('[data-v]');
+      if (b) { o.remove(); res(b.dataset.v === '1'); } else if (e.target === o) { o.remove(); res(false); }
+    });
+    document.body.appendChild(o);
+  });
+}
+const visible = id => !$('#' + id).classList.contains('hidden');
+function show(id) {
+  ['home','quiz','result','review'].forEach(s => $('#' + s).classList.toggle('hidden', s !== id));
+  window.scrollTo(0, 0);
+}
+
+/* ================= Local storage (IndexedDB, fallback localStorage) ================= */
+const idb = (() => {
+  let p;
+  const open = () => p || (p = new Promise((res, rej) => {
+    const r = indexedDB.open('jsonquiz', 1);
+    r.onupgradeneeded = () => r.result.createObjectStore('kv');
+    r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error);
+  }));
+  return {
+    get: async k => { const db = await open(); return new Promise((res, rej) => { const q = db.transaction('kv').objectStore('kv').get(k); q.onsuccess = () => res(q.result); q.onerror = () => rej(q.error); }); },
+    set: async (k, v) => { const db = await open(); return new Promise((res, rej) => { const tx = db.transaction('kv', 'readwrite'); tx.objectStore('kv').put(v, k); tx.oncomplete = () => res(); tx.onerror = () => rej(tx.error); }); }
+  };
+})();
+function commitTimer() {           // fold running time into the session
+  if (DB.S && runStart) { DB.S.acc = elapsed(); runStart = now(); }
+}
+let persistT = 0;
+function persistNow() {
+  clearTimeout(persistT); persistT = 0;
+  commitTimer();
+  DB.savedAt = now();
+  const data = JSON.stringify(DB);
+  try { localStorage.setItem(LS_FALLBACK, data); } catch (e) {}
+  idb.set('state', data).catch(() => {});
+}
+function persist() { clearTimeout(persistT); persistT = setTimeout(persistNow, 250); }
+/** call after any data change: saves locally + schedules cloud sync */
+function changed() { persist(); scheduleSync(); }
+async function loadLocal() {
+  let a = null, b = null;
+  try { const r = await idb.get('state'); if (r) a = JSON.parse(r); } catch (e) {}
+  try { const r = localStorage.getItem(LS_FALLBACK); if (r) b = JSON.parse(r); } catch (e) {}
+  const d = a && b ? ((a.savedAt || 0) >= (b.savedAt || 0) ? a : b) : (a || b);
+  if (d) {
+    DB = { ...DB, ...d, opts: { ...DEF_OPTS, ...(d.opts || {}) } };
+    return;
+  }
+  // migrate from the previous version of the app
+  try {
+    const o = JSON.parse(localStorage.getItem(OLD_LS_KEY) || 'null');
+    if (o) {
+      (o.pool || []).forEach(s => upsertFile(s.name, s.questions, true, s.special));
+      if (o.S) { DB.S = { ...o.S, runStart: undefined }; delete DB.S.source; DB.sT = now(); }
+      if (o.opts) { DB.opts = { ...DEF_OPTS, ...o.opts }; DB.optsT = now(); }
+      persistNow();
+    }
+  } catch (e) {}
+}
+
+/* ================= Parser ================= */
+const isTrue = v => {
+  if (typeof v === 'boolean') return v;
+  if (typeof v === 'number') return v === 1;
+  const s = String(v).trim().toLowerCase();
+  return ['1','true','t','đúng','dung','đ','d','yes','y'].includes(s);
+};
+function toIdx(a, opts) {
+  if (a == null) return -1;
+  if (typeof a === 'number') return Number.isInteger(a) && a >= 0 && a < opts.length ? a : -1;
+  const s = String(a).trim();
+  if (/^\d+$/.test(s)) { const n = +s; return n < opts.length ? n : -1; }
+  if (/^[A-Pa-p]$/.test(s)) return s.toUpperCase().charCodeAt(0) - 65;
+  return opts.findIndex(o => o.trim().toLowerCase() === s.toLowerCase());
+}
+function splitOpts(o) {
+  if (Array.isArray(o)) return o.map(x => String(typeof x === 'object' && x ? (x.text ?? x.content ?? x.label ?? '') : x));
+  if (o && typeof o === 'object') return Object.values(o).map(String);
+  if (typeof o === 'string') return o.split('|').map(s => s.trim());
+  return [];
+}
+function mkTF(q, val, hint, ex) {
+  return { type: 'tf', q: String(q), options: ['Đúng', 'Sai'], answer: isTrue(val) ? 0 : 1, hint: hint || '', explain: ex || '' };
+}
+function normRow(r) {
+  if (Array.isArray(r)) {
+    const t = +r[0];
+    if (t === 1 && r.length <= 5 && !String(r[2] ?? '').includes('|')) return mkTF(r[1], r[2], r[3], r[4]);
+    if (t === 0 || t === 1) {
+      const opts = splitOpts(r[2]);
+      if (opts.length < 2) return null;
+      return { type: 'mc', q: String(r[1]), options: opts, answer: toIdx(r[3], opts), hint: r[4] || '', explain: r[5] || '' };
+    }
+    if (typeof r[0] === 'string') {
+      const opts = splitOpts(r[1]);
+      if (opts.length < 2) return null;
+      return { type: 'mc', q: r[0], options: opts, answer: toIdx(r[2], opts), hint: '', explain: r[3] || '' };
+    }
+    return null;
+  }
+  if (r && typeof r === 'object') {
+    const q = r.question ?? r.q ?? r.cau_hoi ?? r.cauHoi ?? r.content ?? r.text ?? r.title;
+    if (q == null) return null;
+    const ans = r.answer ?? r.correct ?? r.correctAnswer ?? r.correct_answer ?? r.dap_an ?? r.dapAn ?? r.key;
+    const ex = r.explanation ?? r.explain ?? r.giai_thich ?? r.giaiThich ?? r.reason ?? '';
+    const hint = r.hint ?? r.goi_y ?? r.topic ?? '';
+    const opts = splitOpts(r.options ?? r.choices ?? r.answers ?? r.lua_chon ?? r.dap_an_lua_chon);
+    const t = String(r.type ?? '').toLowerCase();
+    if (t === '1' || t === 'tf' || t === 'truefalse' || t === 'true_false' || (opts.length === 0 && ans != null)) return mkTF(q, ans, hint, ex);
+    if (opts.length < 2) return null;
+    return { type: 'mc', q: String(q), options: opts, answer: toIdx(ans, opts), hint, explain: ex };
+  }
+  return null;
+}
+function parseData(data) {
+  if (!Array.isArray(data) && data && typeof data === 'object')
+    data = data.questions ?? data.data ?? data.items ?? data.cau_hoi ?? Object.values(data).find(Array.isArray);
+  if (!Array.isArray(data)) throw new Error('Không tìm thấy danh sách câu hỏi');
+  const out = data.map(normRow).filter(q => q && q.answer >= 0 && q.q.trim());
+  if (!out.length) throw new Error('Không có câu hỏi hợp lệ');
+  return out;
+}
+const keyOf = q => q.type + '|' + q.q.trim() + '|' + q.options.join('|');
+const isBackup = d => d && !Array.isArray(d) && typeof d === 'object' && Array.isArray(d.lib) && 'bank' in d;
+
+/** reads quiz files; backup files are merged directly. Returns [{name, questions}] */
+async function readFiles(fileList) {
+  const res = [];
+  for (const f of fileList) {
+    try {
+      const data = JSON.parse((await f.text()).replace(/^\uFEFF/, ''));
+      if (isBackup(data)) { mergeInto(data); changed(); toast('✅ Đã nhập file sao lưu ' + f.name); continue; }
+      res.push({ name: f.name, questions: parseData(data) });
+    } catch (e) { toast('❌ ' + f.name + ': ' + e.message, 3000); }
+  }
+  return res;
+}
+
+/* ================= Library & wrong-answer notebook ================= */
+const liveLib = () => DB.lib.filter(f => !f.del);
+function upsertFile(name, questions, sel = true, special = false) {
+  const id = (special ? 'w' : 'f') + hash(name + '\n' + questions.map(keyOf).join('\n'));
+  const ex = DB.lib.find(f => f.id === id);
+  if (ex && !ex.del) { ex.sel = sel; ex.t = now(); return { entry: ex, existed: true }; }
+  const entry = { id, name, questions, special, sel, added: ex ? ex.added : now(), t: now(), del: false };
+  if (ex) Object.assign(ex, entry); else DB.lib.push(entry);
+  return { entry: ex || entry, existed: false };
+}
+function removeFile(id) {
+  const f = DB.lib.find(x => x.id === id); if (!f) return;
+  Object.assign(f, { del: true, questions: [], sel: false, t: now() });
+}
+const liveBank = () => Object.values(DB.bank).filter(e => !e.del && e.q);
+function bankRecord(q, correct) {
+  const k = keyOf(q), e = DB.bank[k];
+  if (!correct) DB.bank[k] = { q, w: (e && !e.del ? e.w : 0) + 1, c: 0, t: now(), del: false };
+  else if (e && !e.del) { e.c = (e.c || 0) + 1; e.t = now(); if (e.c >= 2) { e.del = true; e.q = null; } }
+}
+function bankRemove(k) { if (DB.bank[k]) Object.assign(DB.bank[k], { del: true, q: null, t: now() }); }
+
+/* ================= Home ================= */
+function readOptsFromUI() {
+  DB.opts = { shuffleQ: $('#optShuffleQ').checked, shuffleA: $('#optShuffleA').checked,
+    limit: Math.max(0, +$('#optLimit').value || 0), count: Math.max(0, +$('#optCount').value || 0),
+    incBank: $('#optIncBank').checked };
+  DB.optsT = now();
+}
+function writeOptsToUI() {
+  const o = DB.opts;
+  $('#optShuffleQ').checked = !!o.shuffleQ; $('#optShuffleA').checked = !!o.shuffleA;
+  $('#optLimit').value = o.limit || 0; $('#optCount').value = o.count || 0; $('#optIncBank').checked = !!o.incBank;
+}
+function selectedQuestions() {
+  const seen = new Set(), out = [];
+  const add = q => { const k = keyOf(q); if (!seen.has(k)) { seen.add(k); out.push(q); } };
+  liveLib().filter(f => f.sel).forEach(f => f.questions.forEach(add));
+  if (DB.opts.incBank) liveBank().forEach(e => add(e.q));
+  return out;
+}
+function renderHome() {
+  writeOptsToUI();
+  const lib = liveLib();
+  $('#libCount').textContent = lib.length ? `(${lib.length})` : '';
+  $('#selAllBtn').classList.toggle('hidden', lib.length < 2);
+  $('#selAllBtn').textContent = lib.every(f => f.sel) ? 'Bỏ chọn tất cả' : 'Chọn tất cả';
+  $('#srcList').innerHTML = !lib.length ? '<div class="empty">Chưa có file nào — tải file JSON ở trên</div>' :
+    lib.map(f => `
+    <div class="src ${f.special ? 'special' : ''}">
+      <label class="ck"><input type="checkbox" data-sel="${f.id}" ${f.sel ? 'checked' : ''}><span></span></label>
+      <div class="nm"><b>${esc(f.name)}</b><span>${f.questions.length} câu • ${f.questions.filter(q=>q.type==='mc').length} trắc nghiệm, ${f.questions.filter(q=>q.type==='tf').length} đúng/sai</span></div>
+      <button class="rm" data-rm="${f.id}" title="Xoá khỏi thư viện">🗑</button>
+    </div>`).join('');
+
+  const bankN = liveBank().length;
+  $('#bankNum').textContent = bankN;
+  $('#bankPracticeBtn').disabled = !bankN; $('#bankClearBtn').disabled = !bankN; $('#bankViewBtn').disabled = !bankN;
+
+  const total = selectedQuestions().length, n = Math.min(total, DB.opts.count || total);
+  $('#startBtn').disabled = !total;
+  $('#startBtn').textContent = total ? `🚀 Bắt đầu làm bài (${n} câu)` : (lib.length ? '☝️ Hãy chọn ít nhất 1 đề' : '🚀 Bắt đầu làm bài');
+
+  const S = DB.S, rc = $('#resumeCard');
+  if (S && !S.finished) {
+    rc.classList.remove('hidden');
+    const done = S.items.filter(i => i.chosen != null).length;
+    $('#resumeMeta').textContent = `${S.title ? S.title + ' • ' : ''}Đã làm ${done}/${S.items.length} câu • ${fmt(S.acc)}`;
+  } else rc.classList.add('hidden');
+
+  $('#histList').innerHTML = !DB.hist.length ? '<div class="empty">Chưa có lần làm bài nào</div>' :
+    DB.hist.slice(0, 15).map(h => {
+      const p = h.n ? Math.round(h.ok / h.n * 100) : 0;
+      return `<div class="hist"><div class="pct ${p >= 75 ? 'g' : p >= 50 ? 'm' : 'b'}">${p}%</div>
+        <div class="nm"><b>${esc(h.title || 'Bài làm')}</b><span>${fmtDate(h.at)} • đúng ${h.ok}/${h.n} • ${fmt(h.time)}</span></div></div>`;
+    }).join('');
+  $('#histClearBtn').classList.toggle('hidden', !DB.hist.length);
+  renderSyncUI();
+}
+async function addFiles(files) {
+  const res = await readFiles(files);
+  if (res.length) {
+    let added = 0, dup = 0;
+    res.forEach(r => { const x = upsertFile(r.name, r.questions, true); x.existed ? dup++ : added += r.questions.length; });
+    changed();
+    toast(added ? `✅ Đã thêm ${added} câu vào thư viện` : `ℹ️ File đã có trong thư viện`);
+  }
+  renderHome();
+}
+$('#fileInput').addEventListener('change', e => { addFiles([...e.target.files]); e.target.value = ''; });
+const drop = $('#drop');
+['dragenter','dragover'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('over'); }));
+['dragleave','drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('over'); }));
+drop.addEventListener('drop', e => addFiles([...e.dataTransfer.files]));
+$('#srcList').addEventListener('change', e => {
+  const c = e.target.closest('[data-sel]'); if (!c) return;
+  const f = DB.lib.find(x => x.id === c.dataset.sel); if (!f) return;
+  f.sel = c.checked; f.t = now(); changed(); renderHome();
+});
+$('#srcList').addEventListener('click', async e => {
+  const b = e.target.closest('[data-rm]'); if (!b) return;
+  const f = DB.lib.find(x => x.id === b.dataset.rm);
+  if (!f || !await confirmBox('Xoá đề này?', `"${f.name}" sẽ bị xoá khỏi thư viện${syncCfg.gistId ? ' trên mọi máy' : ''}.`, 'Xoá')) return;
+  removeFile(f.id); changed(); renderHome();
+});
+$('#selAllBtn').addEventListener('click', () => {
+  const lib = liveLib(), v = !lib.every(f => f.sel);
+  lib.forEach(f => { f.sel = v; f.t = now(); }); changed(); renderHome();
+});
+['optShuffleQ','optShuffleA','optLimit','optCount','optIncBank'].forEach(id => $('#' + id).addEventListener('change', () => { readOptsFromUI(); changed(); renderHome(); }));
+$('#startBtn').addEventListener('click', async () => {
+  const S = DB.S;
+  if (S && !S.finished && S.items.some(i => i.chosen != null)) {
+    if (!await confirmBox('Bắt đầu bài mới?', 'Bài đang làm dở sẽ bị huỷ.', 'Bắt đầu')) return;
+  }
+  const names = liveLib().filter(f => f.sel).map(f => f.name.replace(/\.json$/i, ''));
+  if (DB.opts.incBank && liveBank().length) names.push('Sổ câu sai');
+  startQuiz(selectedQuestions(), names.length > 2 ? names.slice(0, 2).join(', ') + ` +${names.length - 2}` : names.join(', '));
+});
+$('#resumeBtn').addEventListener('click', () => { runStart = now(); openQuiz(); });
+$('#discardBtn').addEventListener('click', async () => {
+  if (await confirmBox('Huỷ bài đang làm?', 'Tiến độ bài này sẽ bị xoá.', 'Huỷ bài', 'Giữ lại')) { DB.S = null; DB.sT = now(); changed(); renderHome(); }
+});
+$('#bankPracticeBtn').addEventListener('click', async () => {
+  const S = DB.S;
+  if (S && !S.finished && S.items.some(i => i.chosen != null)) {
+    if (!await confirmBox('Bắt đầu bài mới?', 'Bài đang làm dở sẽ bị huỷ.', 'Bắt đầu')) return;
+  }
+  startQuiz(liveBank().map(e => e.q), '📕 Sổ câu sai');
+});
+$('#bankClearBtn').addEventListener('click', async () => {
+  if (!await confirmBox('Xoá toàn bộ sổ câu sai?', 'Không thể hoàn tác.', 'Xoá')) return;
+  Object.keys(DB.bank).forEach(bankRemove); changed(); renderHome();
+});
+$('#bankViewBtn').addEventListener('click', () => { rvMode = 'bank'; rvFrom = 'home'; renderReview(); show('review'); });
+$('#histClearBtn').addEventListener('click', async () => {
+  if (!await confirmBox('Xoá lịch sử làm bài?', 'Không ảnh hưởng thư viện và sổ câu sai.', 'Xoá')) return;
+  DB.hist = []; DB.histClearedT = now(); changed(); renderHome();
+});
+
+/* ================= Quiz ================= */
+function startQuiz(questions, title = '') {
+  const o = DB.opts;
+  let qs = questions.slice();
+  if (!qs.length) return toast('Không có câu hỏi');
+  if (o.shuffleQ) shuffle(qs);
+  if (o.count && o.count < qs.length) qs = qs.slice(0, o.count);
+  DB.S = {
+    id: uid(), title,
+    items: qs.map(q => ({ q, order: (o.shuffleA && q.type === 'mc') ? shuffle(q.options.map((_, i) => i)) : q.options.map((_, i) => i), chosen: null, hint: false })),
+    cur: 0, acc: 0, limit: o.limit * 60, finished: false, startedAt: now()
+  };
+  DB.sT = now(); runStart = now();
+  changed(); openQuiz();
+}
+const elapsed = () => !DB.S ? 0 : (DB.S.acc || 0) + (runStart ? (now() - runStart) / 1000 : 0);
+function openQuiz() {
+  show('quiz'); renderList(); startTimer();
+  const c = DB.S.cur;
+  if (c > 0) requestAnimationFrame(() => go(c, false));
+}
+function startTimer() {
+  clearInterval(tick);
+  const upd = () => {
+    const S = DB.S;
+    if (!S || S.finished) return clearInterval(tick);
+    const e = elapsed();
+    if (S.limit) {
+      const left = S.limit - e;
+      $('#timerTxt').textContent = fmt(left);
+      $('#timer').classList.toggle('warn', left <= 60);
+      if (left <= 0) { toast('⏰ Hết giờ!', 2500); finish(); }
+    } else {
+      $('#timerTxt').textContent = fmt(e);
+      $('#timer').classList.remove('warn');
+    }
+  };
+  upd(); tick = setInterval(upd, 500);
+}
+function counts() {
+  let ok = 0, bad = 0;
+  DB.S.items.forEach(i => { if (i.chosen != null) (i.chosen === i.q.answer ? ok++ : bad++); });
+  return { ok, bad, left: DB.S.items.length - ok - bad };
+}
+function updateStats() {
+  const S = DB.S, n = S.items.length, c = counts();
+  $('#progTxt').textContent = `Câu ${S.cur + 1}/${n}`;
+  $('#pbar').style.width = ((c.ok + c.bad) / n * 100) + '%';
+  $('#cOk').textContent = '✔ ' + c.ok; $('#cBad').textContent = '✘ ' + c.bad; $('#cLeft').textContent = 'Còn ' + c.left;
+}
+function cardInner(i) {
+  const it = DB.S.items[i], q = it.q;
+  const answered = it.chosen != null;
+  const isTF = q.type === 'tf';
+  const inBank = !answered && DB.bank[keyOf(q)] && !DB.bank[keyOf(q)].del;
+  const optsHtml = it.order.map((orig, k) => {
+    let cls = 'opt';
+    if (answered) {
+      cls += ' locked';
+      if (orig === q.answer) cls += ' correct';
+      else if (orig === it.chosen) cls += ' wrong';
+      else cls += ' dim';
+    }
+    const lt = isTF ? (orig === 0 ? '✓' : '✗') : LETTERS[k];
+    return `<button class="${cls}" data-o="${orig}"><span class="lt">${lt}</span><span class="tx">${esc(q.options[orig])}</span></button>`;
+  }).join('');
+
+  let fb = '';
+  if (answered) {
+    const right = it.chosen === q.answer;
+    const dispIdx = it.order.indexOf(q.answer);
+    fb = `<div class="fb ${right ? 'ok' : 'bad'}">
+      <div class="t">${right ? '🎉 Chính xác!' : '❌ Chưa đúng! Đáp án: ' + (isTF ? esc(q.options[q.answer]) : LETTERS[dispIdx])}</div>
+      ${q.hint ? `<div class="topic">📌 ${esc(q.hint)}</div>` : ''}
+      <div class="ex">${q.explain ? esc(q.explain) : '<i>Không có giải thích cho câu này.</i>'}</div></div>`;
+  } else if (q.hint) {
+    fb = it.hint ? `<div class="hint">💡 ${esc(q.hint)}</div>` : `<button class="hint-btn">💡 Xem gợi ý</button>`;
+  }
+  return `
+    <div class="q-head"><span class="q-no">Câu ${i + 1}</span>
+      <span class="badge ${isTF ? 'tf' : ''}">${isTF ? 'Đúng / Sai' : 'Trắc nghiệm'}</span>
+      ${inBank ? '<span class="badge bk">📕 Từng sai</span>' : ''}</div>
+    <p class="q-text">${esc(q.q)}</p>
+    <div class="${isTF ? 'opts tf-grid' : 'opts'}">${optsHtml}</div>${fb}`;
+}
+function cardClass(i) {
+  const it = DB.S.items[i];
+  return 'card qcard' + (it.chosen == null ? '' : (it.chosen === it.q.answer ? ' is-ok' : ' is-bad'));
+}
+function renderList() {
+  $('#qList').innerHTML = DB.S.items.map((_, i) =>
+    `<div class="${cardClass(i)}" id="qc-${i}" data-i="${i}">${cardInner(i)}</div>`).join('');
+  updateStats();
+}
+function renderCard(i) {
+  const el = $('#qc-' + i); if (!el) return;
+  el.className = cardClass(i); el.innerHTML = cardInner(i);
+}
+$('#qList').addEventListener('click', e => {
+  const card = e.target.closest('.qcard'); if (!card) return;
+  const S = DB.S, i = +card.dataset.i, it = S.items[i];
+  if (e.target.closest('.hint-btn')) { it.hint = true; renderCard(i); persist(); return; }
+  const b = e.target.closest('.opt'); if (!b || b.classList.contains('locked') || it.chosen != null) return;
+  it.chosen = +b.dataset.o;
+  const right = it.chosen === it.q.answer;
+  if (!right && navigator.vibrate) navigator.vibrate(90);
+  bankRecord(it.q, right);
+  S.cur = i; DB.sT = now();
+  renderCard(i); updateStats(); persist(); scheduleSync(20000);   // answers are batched: at most ~1 upload / 20s
+  const fb = card.querySelector('.fb');
+  if (fb) setTimeout(() => fb.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 60);
+});
+function go(i, smooth = true) {
+  const S = DB.S;
+  if (i < 0 || i >= S.items.length) return;
+  S.cur = i; updateStats(); persist();
+  const el = $('#qc-' + i);
+  if (el) el.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto', block: 'start' });
+}
+// Track the question currently at the top of the screen while scrolling
+let scrollRaf = 0;
+window.addEventListener('scroll', () => {
+  if (scrollRaf || !DB.S || !visible('quiz')) return;
+  scrollRaf = requestAnimationFrame(() => {
+    scrollRaf = 0;
+    const top = $('#quizTop').getBoundingClientRect().bottom + 10;
+    const cards = $('#qList').children;
+    for (let k = 0; k < cards.length; k++) {
+      if (cards[k].getBoundingClientRect().bottom > top) {
+        if (DB.S.cur !== k) { DB.S.cur = k; updateStats(); persist(); }
+        break;
+      }
+    }
+  });
+}, { passive: true });
+$('#prevBtn').addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+$('#nextBtn').addEventListener('click', () => {
+  const S = DB.S, n = S.items.length;
+  for (let k = 1; k <= n; k++) {
+    const j = (S.cur + k) % n;
+    if (S.items[j].chosen == null) return go(j);
+  }
+  toast('🎉 Bạn đã làm hết tất cả câu hỏi!');
+});
+
+// Shuffle during quiz: unanswered questions are shuffled, answered ones keep their position
+$('#shuffleBtn').addEventListener('click', () => {
+  const S = DB.S;
+  const idx = S.items.map((it, i) => it.chosen == null ? i : -1).filter(i => i >= 0);
+  if (idx.length < 2) {
+    if (idx.length === 0) { shuffle(S.items); DB.sT = now(); changed(); renderList(); go(0, false); toast('🔀 Đã xáo trộn toàn bộ câu hỏi'); }
+    else toast('Chỉ còn 1 câu chưa làm');
+    return;
+  }
+  const picked = shuffle(idx.map(i => S.items[i]));
+  idx.forEach((pos, k) => S.items[pos] = picked[k]);
+  if (DB.opts.shuffleA) picked.forEach(it => { if (it.q.type === 'mc') shuffle(it.order); });
+  DB.sT = now(); changed();
+  renderList(); go(idx[0], false);
+  toast(`🔀 Đã xáo trộn ${idx.length} câu chưa làm`);
+});
+
+// Grid sheet
+$('#gridBtn').addEventListener('click', () => {
+  const S = DB.S;
+  const o = document.createElement('div'); o.className = 'overlay';
+  const c = counts();
+  o.innerHTML = `<div class="sheet"><div class="grab"></div><h3>Danh sách câu hỏi</h3>
+    <div class="legend"><span><i style="background:var(--ok)"></i>Đúng ${c.ok}</span><span><i style="background:var(--bad)"></i>Sai ${c.bad}</span>
+    <span><i style="background:var(--bg);border:1px solid var(--line)"></i>Chưa làm ${c.left}</span></div>
+    <div class="grid">${S.items.map((it, i) => {
+      const cls = it.chosen == null ? '' : (it.chosen === it.q.answer ? 'ok' : 'bad');
+      return `<button class="cell ${cls} ${i === S.cur ? 'cur' : ''}" data-i="${i}">${i + 1}</button>`; }).join('')}</div></div>`;
+  o.addEventListener('click', e => {
+    const b = e.target.closest('[data-i]');
+    if (b) { o.remove(); go(+b.dataset.i); } else if (e.target === o) o.remove();
+  });
+  document.body.appendChild(o);
+  const cur = o.querySelector('.cell.cur'); if (cur) cur.scrollIntoView({ block: 'center' });
+});
+
+$('#quitBtn').addEventListener('click', async () => {
+  if (!await confirmBox('Tạm dừng bài làm?', 'Tiến độ được lưu lại, bạn có thể tiếp tục sau (cả trên máy khác nếu đã bật đồng bộ).', 'Thoát', 'Ở lại')) return;
+  commitTimer(); runStart = null; clearInterval(tick); DB.sT = now(); changed(); show('home'); renderHome();
+});
+$('#finishBtn').addEventListener('click', async () => {
+  const c = counts();
+  if (c.left && !await confirmBox('Nộp bài?', `Bạn còn ${c.left} câu chưa làm. Vẫn hoàn thành?`, 'Hoàn thành', 'Làm tiếp')) return;
+  finish();
+});
+
+/* ================= Result ================= */
+function finish() {
+  const S = DB.S;
+  commitTimer(); runStart = null; S.finished = true; clearInterval(tick);
+  const c = counts();
+  DB.hist.unshift({ id: S.id || uid(), at: now(), title: S.title || '', n: S.items.length, ok: c.ok, bad: c.bad, skip: c.left, time: Math.round(S.acc) });
+  DB.hist = DB.hist.slice(0, 50);
+  DB.sT = now(); changed();
+  renderResult(); show('result');
+}
+function renderResult() {
+  const S = DB.S, c = counts(), n = S.items.length, pct = n ? Math.round(c.ok / n * 100) : 0;
+  $('#ring').style.setProperty('--p', 0);
+  requestAnimationFrame(() => setTimeout(() => $('#ring').style.setProperty('--p', pct), 50));
+  $('#rPct').textContent = pct + '%';
+  $('#rFrac').textContent = `${c.ok}/${n} câu đúng`;
+  $('#sOk').textContent = c.ok; $('#sBad').textContent = c.bad; $('#sSkip').textContent = c.left; $('#sTime').textContent = fmt(S.acc);
+  $('#verdict').textContent = pct >= 90 ? '🏆 Xuất sắc!' : pct >= 75 ? '🌟 Rất tốt!' : pct >= 50 ? '👍 Khá ổn, cố gắng thêm!' : '💪 Cần ôn tập thêm!';
+  const w = wrongQs().length;
+  $('#redoWrongBtn').disabled = !w;
+  $('#redoWrongBtn').textContent = `🔁 Làm lại các câu sai (${w})`;
+}
+function wrongQs(withSkip = $('#inclSkip').checked) {
+  return DB.S.items.filter(i => i.chosen == null ? withSkip : i.chosen !== i.q.answer).map(i => i.q);
+}
+$('#inclSkip').addEventListener('change', renderResult);
+$('#redoWrongBtn').addEventListener('click', () => {
+  const w = wrongQs();
+  if (!w.length) return toast('Không có câu sai 🎉');
+  startQuiz(w, 'Làm lại câu sai');
+});
+$('#redoAllBtn').addEventListener('click', () => startQuiz(DB.S.items.map(i => i.q), DB.S.title));
+$('#homeBtn').addEventListener('click', () => { show('home'); renderHome(); });
+$('#comboBtn').addEventListener('click', () => $('#comboInput').click());
+$('#comboInput').addEventListener('change', async e => {
+  const files = [...e.target.files]; e.target.value = '';
+  if (!files.length) return;
+  const res = await readFiles(files);
+  if (!res.length) return;
+  const w = wrongQs();
+  liveLib().forEach(f => { if (f.sel) { f.sel = false; f.t = now(); } });     // only the new combo is selected
+  if (w.length) upsertFile('Câu sai – ' + fmtDate(now()), w, true, true);
+  res.forEach(r => upsertFile(r.name, r.questions, true));
+  changed();
+  show('home'); renderHome();
+  toast(`✅ Đã gộp ${w.length} câu sai + ${res.reduce((a, s) => a + s.questions.length, 0)} câu mới`, 2500);
+});
+
+/* ================= Review (session or notebook) ================= */
+let rvBankKeys = [];
+function renderReview() {
+  $('#rvTabs').classList.toggle('hidden', rvMode === 'bank');
+  if (rvMode === 'bank') {
+    $('#rvTitle').textContent = '📕 Sổ câu sai';
+    const list = liveBank().sort((a, b) => b.w - a.w || b.t - a.t);
+    rvBankKeys = list.map(e => keyOf(e.q));
+    $('#rvList').innerHTML = !list.length ? '<div class="card empty">🎉 Sổ câu sai đang trống!</div>' : list.map((e, i) => {
+      const q = e.q;
+      return `<div class="card rv"><div class="q-head"><span class="q-no">#${i + 1}</span>
+        <span class="badge bk">Sai ${e.w} lần</span>${e.c ? `<span class="badge">Đúng liên tiếp ${e.c}/2</span>` : ''}</div>
+        <p class="q-text">${esc(q.q)}</p>
+        <div class="ans ok">✔ Đáp án đúng: ${q.type === 'tf' ? '' : LETTERS[q.answer] + '. '}${esc(q.options[q.answer])}</div>
+        ${q.explain ? `<div class="ex">💬 ${esc(q.explain)}</div>` : ''}
+        <button class="unbank" data-k="${i}">✕ Xoá khỏi sổ</button></div>`;
+    }).join('');
+    return;
+  }
+  $('#rvTitle').textContent = 'Xem lại';
+  const S = DB.S;
+  const list = S.items.map((it, i) => ({ it, i })).filter(({ it }) => rvFilter === 'all' || it.chosen == null || it.chosen !== it.q.answer);
+  if (!list.length) { $('#rvList').innerHTML = '<div class="card empty">🎉 Không có câu sai nào!</div>'; return; }
+  $('#rvList').innerHTML = list.map(({ it, i }) => {
+    const q = it.q, L = o => q.type === 'tf' ? '' : LETTERS[it.order.indexOf(o)] + '. ';
+    const right = it.chosen === q.answer;
+    const your = it.chosen == null ? `<div class="ans mu">⏺ Chưa trả lời</div>`
+      : `<div class="ans ${right ? 'ok' : 'bad'}">${right ? '✔' : '✘'} Bạn chọn: ${L(it.chosen)}${esc(q.options[it.chosen])}</div>`;
+    return `<div class="card rv"><div class="q-head"><span class="q-no">Câu ${i + 1}</span>
+      <span class="badge ${q.type === 'tf' ? 'tf' : ''}">${q.type === 'tf' ? 'Đúng / Sai' : 'Trắc nghiệm'}</span></div>
+      <p class="q-text">${esc(q.q)}</p>${your}
+      ${right ? '' : `<div class="ans ok">✔ Đáp án đúng: ${L(q.answer)}${esc(q.options[q.answer])}</div>`}
+      ${q.explain ? `<div class="ex">💬 ${esc(q.explain)}</div>` : ''}</div>`;
+  }).join('');
+}
+$('#rvList').addEventListener('click', e => {
+  const b = e.target.closest('.unbank'); if (!b) return;
+  bankRemove(rvBankKeys[+b.dataset.k]); changed(); renderReview();
+});
+$('#reviewBtn').addEventListener('click', () => { rvMode = 'session'; rvFrom = 'result'; renderReview(); show('review'); });
+$('#rvBack').addEventListener('click', () => { show(rvFrom); if (rvFrom === 'home') renderHome(); });
+$('#rvTabs').addEventListener('click', e => {
+  const b = e.target.closest('[data-f]'); if (!b) return;
+  rvFilter = b.dataset.f;
+  document.querySelectorAll('#rvTabs button').forEach(x => x.classList.toggle('on', x === b));
+  renderReview();
+});
+
+/* ================= Backup file ================= */
+function exportData() {
+  commitTimer();
+  return { v: 2, lib: DB.lib, bank: DB.bank, hist: DB.hist, histClearedT: DB.histClearedT || 0, S: DB.S, sT: DB.sT, opts: DB.opts, optsT: DB.optsT };
+}
+$('#exportBtn').addEventListener('click', () => {
+  const blob = new Blob([JSON.stringify(exportData())], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'trac-nghiem-sao-luu-' + new Date().toISOString().slice(0, 10) + '.json';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+});
+$('#importBtn').addEventListener('click', () => $('#importInput').click());
+$('#importInput').addEventListener('change', async e => {
+  const f = e.target.files[0]; e.target.value = ''; if (!f) return;
+  try {
+    const d = JSON.parse((await f.text()).replace(/^\uFEFF/, ''));
+    if (!isBackup(d)) throw new Error('Không phải file sao lưu của app');
+    mergeInto(d); changed(); renderHome(); toast('✅ Đã nhập & gộp dữ liệu sao lưu');
+  } catch (err) { toast('❌ ' + err.message, 3000); }
+});
+
+/* ================= Merge (used by sync + backup import) ================= */
+/** merges another copy of the data into DB (newest change wins per item). Returns true if the session was replaced. */
+function mergeInto(r) {
+  // library: per file, newest wins (deletions are kept as tombstones)
+  const m = new Map(DB.lib.map(f => [f.id, f]));
+  (r.lib || []).forEach(f => { const l = m.get(f.id); if (!l || (f.t || 0) > (l.t || 0)) m.set(f.id, f); });
+  DB.lib = [...m.values()].sort((a, b) => (a.added || 0) - (b.added || 0));
+  // wrong-answer notebook
+  Object.entries(r.bank || {}).forEach(([k, e]) => { const l = DB.bank[k]; if (!l || (e.t || 0) > (l.t || 0)) DB.bank[k] = e; });
+  // history
+  const cleared = Math.max(DB.histClearedT || 0, r.histClearedT || 0);
+  const hm = new Map(); [...(r.hist || []), ...DB.hist].forEach(h => hm.set(h.id + '|' + h.at, h));
+  DB.hist = [...hm.values()].filter(h => h.at > cleared).sort((a, b) => b.at - a.at).slice(0, 50);
+  DB.histClearedT = cleared;
+  // options
+  if ((r.optsT || 0) > (DB.optsT || 0)) { DB.opts = { ...DEF_OPTS, ...r.opts }; DB.optsT = r.optsT; }
+  // current session: the most recently changed one wins
+  if ((r.sT || 0) > (DB.sT || 0)) { DB.S = r.S; DB.sT = r.sT; return true; }
+  return false;
+}
+
+/* ================= Cloud sync (GitHub Gist) ================= */
+const GH = 'https://api.github.com', GIST_FILE = 'json-quiz-data.json';
+let syncCfg = {}; try { syncCfg = JSON.parse(localStorage.getItem(SYNC_KEY) || '{}'); } catch (e) {}
+const saveSyncCfg = () => localStorage.setItem(SYNC_KEY, JSON.stringify(syncCfg));
+let syncState = { s: 'idle', msg: '' }, syncing = false, syncAgain = false, syncT = 0;
+
+async function gh(path, opt = {}) {
+  const r = await fetch(GH + path, { ...opt, cache: 'no-store', headers: {
+    Authorization: 'Bearer ' + syncCfg.token, Accept: 'application/vnd.github+json',
+    ...(opt.body ? { 'Content-Type': 'application/json' } : {}) } });
+  if (!r.ok) {
+    if (r.status === 401) throw new Error('Token không hợp lệ hoặc đã hết hạn');
+    if (r.status === 404) throw new Error('Không tìm thấy Gist (token thiếu quyền gist?)');
+    throw new Error('GitHub lỗi ' + r.status);
+  }
+  return r.json();
+}
+async function findOrCreateGist() {
+  for (let page = 1; page <= 10; page++) {
+    const list = await gh(`/gists?per_page=100&page=${page}`);
+    const g = list.find(x => x.files && x.files[GIST_FILE]);
+    if (g) return g.id;
+    if (list.length < 100) break;
+  }
+  const g = await gh('/gists', { method: 'POST', body: JSON.stringify({
+    description: 'Trắc nghiệm JSON – dữ liệu đồng bộ (đừng xoá)', public: false,
+    files: { [GIST_FILE]: { content: JSON.stringify(exportData()) } } }) });
+  return g.id;
+}
+async function pullRemote() {
+  const g = await gh('/gists/' + syncCfg.gistId);
+  const f = g.files && g.files[GIST_FILE];
+  if (!f) return null;
+  let txt = f.content;
+  if (f.truncated) txt = await (await fetch(f.raw_url, { cache: 'no-store' })).text();
+  try { return JSON.parse(txt); } catch (e) { return null; }
+}
+function setSync(s, msg = '') { syncState = { s, msg }; renderSyncUI(); }
+function renderSyncUI() {
+  const on = !!(syncCfg.token && syncCfg.gistId);
+  $('#syncOff').classList.toggle('hidden', on);
+  $('#syncOn').classList.toggle('hidden', !on);
+  const dot = $('#syncDot');
+  dot.classList.toggle('hidden', !on);
+  if (!on) return;
+  const { s, msg } = syncState;
+  const txt = s === 'busy' ? 'Đang đồng bộ…' : s === 'err' ? '⚠ ' + msg
+    : s === 'offline' ? 'Mất mạng — sẽ đồng bộ khi có mạng'
+    : syncCfg.last ? 'Đã đồng bộ lúc ' + fmtDate(syncCfg.last) : 'Đã kết nối';
+  $('#syncLine').className = 'sync-line ' + (s === 'busy' ? 'busy' : s === 'err' || s === 'offline' ? 'err' : 'ok');
+  $('#syncMsg').textContent = txt;
+  dot.className = 'sync-dot ' + (s === 'busy' ? 'busy' : s === 'err' || s === 'offline' ? 'err' : 'ok');
+  dot.textContent = s === 'busy' ? '⟳ Đồng bộ' : s === 'err' || s === 'offline' ? '⚠ Chưa đồng bộ' : '☁️ Đã lưu';
+}
+/** schedules a sync; an already-pending earlier sync is kept (throttle, protects GitHub rate limits) */
+let syncDue = 0;
+function scheduleSync(delay = 4000) {
+  if (!syncCfg.token || !syncCfg.gistId) return;
+  const due = now() + delay;
+  if (syncT && syncDue <= due) return;
+  clearTimeout(syncT); syncDue = due;
+  syncT = setTimeout(() => { syncT = 0; doSync(); }, delay);
+}
+async function doSync() {
+  if (!syncCfg.token || !syncCfg.gistId) return;
+  if (syncing) { syncAgain = true; return; }
+  if (!navigator.onLine) { setSync('offline'); return; }
+  clearTimeout(syncT); syncT = 0;
+  syncing = true; setSync('busy');
+  try {
+    const remote = await pullRemote();
+    const before = stable(exportData());
+    const replaced = remote ? mergeInto(remote) : false;
+    const merged = exportData(), mergedStr = stable(merged);
+    if (!remote || mergedStr !== stable(remote)) {
+      await gh('/gists/' + syncCfg.gistId, { method: 'PATCH', body: JSON.stringify({ files: { [GIST_FILE]: { content: JSON.stringify(merged) } } }) });
+    }
+    if (mergedStr !== before) { persistNow(); refreshAfterMerge(replaced); }
+    syncCfg.last = now(); saveSyncCfg();
+    setSync('ok');
+  } catch (e) {
+    setSync(navigator.onLine ? 'err' : 'offline', e.message);
+  } finally {
+    syncing = false;
+    if (syncAgain) { syncAgain = false; scheduleSync(1000); }
+  }
+}
+function refreshAfterMerge(sessionReplaced) {
+  if (visible('home')) renderHome();
+  else if (visible('quiz') && sessionReplaced) {
+    if (DB.S && !DB.S.finished) { renderList(); startTimer(); toast('🔄 Đã cập nhật tiến độ từ máy khác'); }
+    else { runStart = null; clearInterval(tick); show('home'); renderHome(); toast('🔄 Bài này đã được kết thúc trên máy khác'); }
+  }
+}
+$('#connectBtn').addEventListener('click', async () => {
+  const t = $('#tokenInput').value.trim();
+  if (!t) return toast('Hãy dán token trước');
+  const btn = $('#connectBtn'); btn.disabled = true; btn.textContent = 'Đang kết nối…';
+  syncCfg = { token: t };
+  try {
+    syncCfg.gistId = await findOrCreateGist();
+    saveSyncCfg(); $('#tokenInput').value = '';
+    await doSync();
+    toast('✅ Đã bật đồng bộ');
+  } catch (e) {
+    syncCfg = {}; saveSyncCfg();
+    toast('❌ ' + e.message, 3500);
+  } finally { btn.disabled = false; btn.textContent = '🔗 Kết nối'; renderHome(); }
+});
+$('#syncNowBtn').addEventListener('click', doSync);
+$('#disconnectBtn').addEventListener('click', async () => {
+  if (!await confirmBox('Ngắt đồng bộ trên máy này?', 'Dữ liệu trên máy và trên Gist vẫn được giữ nguyên.', 'Ngắt')) return;
+  syncCfg = {}; saveSyncCfg(); setSync('idle'); renderHome();
+});
+window.addEventListener('online', () => doSync());
+window.addEventListener('offline', () => syncCfg.gistId && setSync('offline'));
+
+/* ================= Lifecycle ================= */
+window.addEventListener('pagehide', persistNow);
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) { persistNow(); if (syncCfg.gistId) doSync(); }
+  else if (syncCfg.gistId && now() - (syncCfg.last || 0) > 15000) doSync();   // pull changes made on other devices
+});
+
+(async () => {
+  await loadLocal();
+  if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
+  renderHome();
+  if (syncCfg.gistId) doSync();
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http'))
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+})();
+})();
+</script>
+</body>
+</html>
