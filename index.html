@@ -43,14 +43,15 @@
     padding:calc(var(--safe-t) + 10px) 12px 10px;display:flex;align-items:center;gap:8px;
     border-bottom:1px solid var(--line)}
   .appbar h1{font-size:18px;margin:0;flex:1;font-weight:700}
-  .icon-btn{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:20px;flex:none}
+  .icon-btn{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:19px;flex:none}
   .icon-btn:active{background:var(--pri-soft)}
+  .pause-btn{background:var(--warn-soft);color:var(--warn);font-size:16px;font-weight:800}
   .sync-dot{font-size:13px;font-weight:600;padding:5px 10px;border-radius:999px;background:var(--bg);color:var(--muted);white-space:nowrap}
   .sync-dot.ok{background:var(--ok-soft);color:var(--ok)}
   .sync-dot.busy{background:var(--pri-soft);color:var(--pri)}
   .sync-dot.err{background:var(--bad-soft);color:var(--bad)}
-  .timer{font-variant-numeric:tabular-nums;font-weight:700;font-size:17px;padding:6px 12px;border-radius:999px;
-    background:var(--pri-soft);color:var(--pri);display:flex;align-items:center;gap:6px}
+  .timer{font-variant-numeric:tabular-nums;font-weight:700;font-size:16px;padding:6px 11px;border-radius:999px;
+    background:var(--pri-soft);color:var(--pri);display:flex;align-items:center;gap:5px}
   .timer.warn{background:var(--bad-soft);color:var(--bad);animation:pulse 1s infinite}
   @keyframes pulse{50%{opacity:.6}}
   .progress-txt{flex:1;text-align:center;font-weight:600;color:var(--muted);font-size:15px}
@@ -60,7 +61,7 @@
   .content{flex:1;padding:16px 14px calc(var(--safe-b) + 110px)}
   .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin-bottom:14px}
 
-  /* ---------- Home ---------- */
+  /* ---------- Home & Folders ---------- */
   .hero{text-align:center;padding:6px 0 4px}
   .hero .logo{font-size:40px}
   .hero h2{margin:4px 0 2px;font-size:21px}
@@ -71,25 +72,44 @@
   .drop.over{transform:scale(1.02)}
   .drop small{color:var(--muted);font-weight:400}
   .drop .big{font-size:34px}
+  .lib-tools{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+  .chip-btn{padding:7px 12px;border-radius:10px;background:var(--pri-soft);color:var(--pri);font-size:13.5px;font-weight:700;display:inline-flex;align-items:center;gap:5px}
+  .chip-btn.line{background:var(--bg);color:var(--text);border:1px solid var(--line);font-weight:600}
+  .folder-box{border:1px solid var(--line);border-radius:14px;margin-bottom:10px;overflow:hidden;background:var(--bg)}
+  .folder-head{display:flex;align-items:center;gap:8px;padding:10px 10px;background:var(--pri-soft)}
+  .folder-toggle{display:flex;align-items:center;gap:6px;flex:1;min-width:0;text-align:left}
+  .folder-toggle .arw{font-size:12px;color:var(--pri);transition:transform .2s;width:14px}
+  .folder-box.closed .folder-toggle .arw{transform:rotate(-90deg)}
+  .folder-toggle .fnm{flex:1;min-width:0}
+  .folder-toggle .fnm b{display:block;font-size:15px;color:var(--pri);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .folder-toggle .fnm span{font-size:12.5px;color:var(--muted)}
+  .folder-acts{display:flex;gap:2px}
+  .folder-acts button{width:32px;height:32px;border-radius:8px;font-size:15px;display:grid;place-items:center;color:var(--muted)}
+  .folder-acts button:active{background:var(--card)}
+  .folder-body{padding:2px 10px 4px 16px;background:var(--card);border-top:1px solid var(--line)}
+  .folder-box.closed .folder-body{display:none}
   .src{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
   .src:last-child{border-bottom:none}
   .src .nm{flex:1;min-width:0}
   .src .nm b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:15px}
   .src .nm span{font-size:13px;color:var(--muted)}
   .src.special .nm b{color:var(--bad)}
-  .src .rm{color:var(--muted);font-size:18px;width:36px;height:36px;flex:none}
-  .ck{position:relative;width:26px;height:26px;flex:none}
+  .src .ibtn{color:var(--muted);font-size:17px;width:34px;height:34px;flex:none;border-radius:8px;display:grid;place-items:center}
+  .src .ibtn:active{background:var(--bg)}
+  .ck{position:relative;width:24px;height:24px;flex:none}
   .ck input{opacity:0;position:absolute;inset:0;margin:0;cursor:pointer}
-  .ck span{position:absolute;inset:0;border-radius:8px;border:2px solid var(--line);pointer-events:none;transition:.15s;display:grid;place-items:center;color:#fff;font-size:15px;font-weight:800}
+  .ck span{position:absolute;inset:0;border-radius:7px;border:2px solid var(--line);background:var(--card);pointer-events:none;transition:.15s;display:grid;place-items:center;color:#fff;font-size:14px;font-weight:800}
   .ck input:checked+span{background:var(--pri);border-color:var(--pri)}
   .ck input:checked+span::after{content:"✓"}
+  .ck input.part+span{background:var(--pri-soft);border-color:var(--pri);color:var(--pri)}
+  .ck input.part+span::after{content:"–"}
   .sec-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin:0 0 8px;display:flex;justify-content:space-between;align-items:center;gap:8px}
   .sec-title a,.sec-title button{text-transform:none;letter-spacing:0;font-weight:600;color:var(--pri);font-size:13px}
   .row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
   .row:last-child{border-bottom:none}
   .row label{flex:1}
   .row small{display:block;color:var(--muted);font-size:12.5px}
-  .num,.txt{padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text);font:inherit}
+  .num,.txt,select.txt{padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text);font:inherit}
   .num{width:84px;text-align:center}
   .txt{width:100%}
   .switch{position:relative;width:50px;height:30px;flex:none}
@@ -99,7 +119,7 @@
     transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
   .switch input:checked+span{background:var(--pri)}
   .switch input:checked+span::after{transform:translateX(20px)}
-  .empty{color:var(--muted);text-align:center;font-size:14px;padding:6px 0}
+  .empty{color:var(--muted);text-align:center;font-size:14px;padding:8px 0}
   .note{font-size:13.5px;color:var(--muted);margin:0 0 10px}
   details.help summary{cursor:pointer;font-weight:600}
   details.help pre{background:var(--bg);padding:10px;border-radius:10px;overflow:auto;font-size:12.5px;white-space:pre-wrap;word-break:break-word}
@@ -108,15 +128,36 @@
   .bank-num{font-size:30px;font-weight:800;color:var(--bad);line-height:1}
   .bank-top{display:flex;align-items:center;gap:14px;margin-bottom:12px}
   .bank-top p{margin:0;font-size:13.5px;color:var(--muted)}
-  .hist{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
+
+  /* ---------- Stats & Chart ---------- */
+  .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+  .kpi{background:var(--bg);border-radius:12px;padding:10px 6px;text-align:center}
+  .kpi b{display:block;font-size:17px;color:var(--pri);line-height:1.2}
+  .kpi span{font-size:11.5px;color:var(--muted)}
+  .chart-bar{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+  .seg{display:inline-flex;background:var(--bg);border-radius:10px;padding:3px;gap:2px}
+  .seg button{padding:5px 10px;border-radius:8px;font-size:12.5px;font-weight:600;color:var(--muted)}
+  .seg button.on{background:var(--card);color:var(--pri);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+  .chart-wrap{background:var(--bg);border-radius:14px;padding:10px 8px 6px;overflow-x:auto}
+  .chart-wrap svg{display:block;width:100%;height:190px;overflow:visible}
+  .chart-tip{margin-top:8px;padding:10px 12px;border-radius:12px;background:var(--pri-soft);font-size:13.5px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+  .chart-tip b{color:var(--pri)}
+
+  /* ---------- History ---------- */
+  .hist{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--line);font-size:14px}
   .hist:last-child{border-bottom:none}
-  .hist .pct{width:52px;text-align:center;font-weight:800;border-radius:10px;padding:6px 0;flex:none}
+  .hist .pct{min-width:58px;text-align:center;font-weight:800;border-radius:11px;padding:6px 6px;flex:none;line-height:1.15}
+  .hist .pct small{display:block;font-size:11px;font-weight:600;opacity:.85}
   .hist .pct.g{background:var(--ok-soft);color:var(--ok)}
   .hist .pct.m{background:var(--warn-soft);color:var(--warn)}
   .hist .pct.b{background:var(--bad-soft);color:var(--bad)}
   .hist .nm{flex:1;min-width:0}
-  .hist .nm b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .hist .nm span{color:var(--muted);font-size:12.5px}
+  .hist .nm b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:14.5px}
+  .hist .nm span{color:var(--muted);font-size:12.5px;display:block}
+  .hist .hacts{display:flex;gap:4px;flex:none}
+  .hist .hbtn{padding:6px 9px;border-radius:9px;background:var(--bg);font-size:12.5px;font-weight:600;color:var(--pri)}
+  .hist .hbtn.del{color:var(--muted)}
+
   .sync-line{display:flex;align-items:center;gap:8px;font-size:14px;margin-bottom:12px}
   .sync-line i{width:10px;height:10px;border-radius:50%;background:var(--muted);flex:none}
   .sync-line.ok i{background:var(--ok)} .sync-line.busy i{background:var(--pri);animation:pulse 1s infinite} .sync-line.err i{background:var(--bad)}
@@ -193,11 +234,11 @@
   .navbar .btn{padding:14px 6px;font-size:15px}
   .navbar .arrow{font-size:22px;padding:0;height:52px}
 
-  /* ---------- Sheet (grid) ---------- */
-  .overlay{position:fixed;inset:0;background:rgba(10,12,25,.5);z-index:40;display:flex;align-items:flex-end;justify-content:center;
+  /* ---------- Overlays / Sheets / Modals ---------- */
+  .overlay{position:fixed;inset:0;background:rgba(10,12,25,.55);backdrop-filter:blur(4px);z-index:40;display:flex;align-items:flex-end;justify-content:center;
     animation:fade .2s}
   @keyframes fade{from{opacity:0}}
-  .sheet{background:var(--card);width:100%;max-width:720px;max-height:80dvh;border-radius:22px 22px 0 0;
+  .sheet{background:var(--card);width:100%;max-width:720px;max-height:82dvh;border-radius:22px 22px 0 0;
     padding:10px 16px calc(var(--safe-b) + 16px);display:flex;flex-direction:column;animation:up .25s}
   @keyframes up{from{transform:translateY(100%)}}
   .sheet .grab{width:44px;height:5px;border-radius:9px;background:var(--line);margin:0 auto 10px}
@@ -209,22 +250,24 @@
   .cell.ok{background:var(--ok);color:#fff}
   .cell.bad{background:var(--bad);color:#fff}
   .cell.cur{border-color:var(--pri)}
+  .pick-list{max-height:240px;overflow:auto;border:1px solid var(--line);border-radius:12px;padding:4px 10px;margin:8px 0 12px;background:var(--bg)}
 
   /* ---------- Result ---------- */
   .ring{width:170px;height:170px;border-radius:50%;margin:8px auto 10px;display:grid;place-items:center;
     background:conic-gradient(var(--ok) calc(var(--p)*1%), var(--line) 0)}
   .ring>div{width:136px;height:136px;border-radius:50%;background:var(--card);display:grid;place-items:center;text-align:center}
-  .ring b{font-size:36px;line-height:1}
+  .ring b{font-size:32px;line-height:1.05}
   .ring span{font-size:13px;color:var(--muted)}
   .verdict{text-align:center;font-size:18px;font-weight:700;margin-bottom:4px}
-  .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
-  .stat{border-radius:14px;padding:12px;text-align:center}
-  .stat b{display:block;font-size:24px}
-  .stat span{font-size:13px}
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:14px}
+  .stat{border-radius:14px;padding:11px 6px;text-align:center}
+  .stat b{display:block;font-size:20px;line-height:1.2}
+  .stat span{font-size:12px}
   .stat.ok{background:var(--ok-soft);color:var(--ok)}
   .stat.bad{background:var(--bad-soft);color:var(--bad)}
   .stat.mu{background:var(--bg);color:var(--muted)}
   .stat.pr{background:var(--pri-soft);color:var(--pri)}
+  .stat.wn{background:var(--warn-soft);color:var(--warn)}
   .combo{border:2px dashed var(--pri)}
 
   /* ---------- Review ---------- */
@@ -237,16 +280,27 @@
   .rv .ans.bad{background:var(--bad-soft);color:var(--bad)}
   .rv .ans.mu{background:var(--bg);color:var(--muted)}
   .rv .ex{font-size:14.5px;white-space:pre-wrap;margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
-  .rv .unbank{margin-top:10px;font-size:13.5px;color:var(--muted);font-weight:600}
+  .rv-del-btn{margin-left:auto;padding:5px 10px;border-radius:8px;background:var(--bad-soft);color:var(--bad);font-size:12.5px;font-weight:700}
+  .rv-bar{position:sticky;top:calc(var(--safe-t) + 62px);z-index:15;background:var(--card);border-radius:14px;padding:12px;margin-bottom:14px;box-shadow:var(--shadow);border:1px solid var(--line)}
+  .rv-bar-actions{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px;flex-wrap:wrap}
+  .bank-inline{margin-top:12px;border-top:1px solid var(--line);padding-top:10px}
+  .bank-inline-bar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+  .bank-inline-list{max-height:320px;overflow:auto;border:1px solid var(--line);border-radius:12px;background:var(--bg);padding:4px 10px}
+  .bank-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+  .bank-item:last-child{border-bottom:none}
+  .bank-item .btxt{flex:1;min-width:0;font-size:14px}
+  .bank-item .btxt b{display:block;font-weight:600;margin-bottom:3px;word-break:break-word}
+  .bank-item .btxt span{font-size:12.5px;color:var(--ok);display:block}
+  .bank-item .bdel{padding:6px 10px;border-radius:8px;background:var(--bad-soft);color:var(--bad);font-size:12.5px;font-weight:700;flex:none}
 
   /* ---------- Toast / modal ---------- */
   .toast{position:fixed;left:50%;top:calc(var(--safe-t) + 70px);transform:translateX(-50%);z-index:60;
     background:#1f2333;color:#fff;padding:10px 18px;border-radius:999px;font-size:14px;font-weight:600;
     box-shadow:0 8px 24px rgba(0,0,0,.25);animation:fadeUp .2s;max-width:90vw;text-align:center}
-  .modal{background:var(--card);border-radius:20px;padding:20px;width:calc(100% - 32px);max-width:420px;margin:auto;animation:fadeUp .2s}
+  .modal{background:var(--card);border-radius:20px;padding:20px;width:calc(100% - 32px);max-width:440px;margin:auto;animation:fadeUp .2s;max-height:88dvh;overflow:auto}
   .modal h3{margin:0 0 6px}
-  .modal p{margin:0 0 16px;color:var(--muted)}
-  .modal .acts{display:flex;gap:10px}
+  .modal p{margin:0 0 14px;color:var(--muted);font-size:14.5px}
+  .modal .acts{display:flex;gap:10px;margin-top:14px}
   .overlay.center{align-items:center}
 </style>
 </head>
@@ -259,7 +313,7 @@
     <div class="hero">
       <div class="logo">🎯</div>
       <h2>Tạo bộ đề từ file JSON</h2>
-      <p>File đã tải được lưu lại — lần sau mở app vẫn còn</p>
+      <p>File đã tải được lưu lại — gom thư mục & thống kê tiến bộ</p>
     </div>
 
     <div id="resumeCard" class="card resume hidden" style="margin-top:14px">
@@ -280,11 +334,15 @@
 
     <div class="card">
       <p class="sec-title"><span>📚 Thư viện đề <span id="libCount"></span></span><button id="selAllBtn">Chọn tất cả</button></p>
+      <div class="lib-tools" id="libTools">
+        <button class="chip-btn" id="groupFolderBtn">📁 Gom vào thư mục</button>
+        <button class="chip-btn line" id="newFolderBtn">➕ Tạo thư mục trống</button>
+      </div>
       <div id="srcList"><div class="empty">Chưa có file nào</div></div>
     </div>
 
     <div class="card">
-      <p class="sec-title"><span>📕 Sổ câu sai</span><button id="bankViewBtn">Xem sổ</button></p>
+      <p class="sec-title"><span>📕 Sổ câu sai</span><button id="bankViewBtn">🔍 Mở toàn màn hình</button></p>
       <div class="bank-top">
         <div class="bank-num" id="bankNum">0</div>
         <p>câu đang trong sổ. Mỗi câu làm sai sẽ tự vào sổ, và tự rời sổ khi bạn làm đúng <b>2 lần liên tiếp</b>.</p>
@@ -292,8 +350,18 @@
       <div class="row" style="padding-top:0"><label for="optIncBank">Gộp sổ câu sai vào bài làm<small>Trộn chung với các đề đang chọn ở trên</small></label>
         <span class="switch"><input type="checkbox" id="optIncBank"><span></span></span></div>
       <div class="hrow" style="margin-top:10px">
-        <button class="btn btn-bad sm" id="bankPracticeBtn">🔁 Luyện riêng câu sai</button>
-        <button class="btn btn-line sm" id="bankClearBtn" style="flex:.5">Xoá sổ</button>
+        <button class="btn btn-soft sm" id="bankToggleBtn">📂 Mở danh sách & xoá câu</button>
+        <button class="btn btn-bad sm" id="bankPracticeBtn">🔁 Luyện câu sai</button>
+        <button class="btn btn-line sm" id="bankClearBtn" style="flex:.45">Xoá hết</button>
+      </div>
+      <div class="bank-inline hidden" id="bankInline">
+        <div class="bank-inline-bar">
+          <label style="display:inline-flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;cursor:pointer">
+            <span class="ck"><input type="checkbox" id="biSelAll"><span></span></span> Chọn tất cả
+          </label>
+          <button class="chip-btn" id="biDelSelBtn" style="background:var(--bad-soft);color:var(--bad)" disabled>🗑 Xoá đã chọn (0)</button>
+        </div>
+        <div class="bank-inline-list" id="biList"></div>
       </div>
     </div>
 
@@ -309,10 +377,44 @@
         <input type="number" class="num" id="optCount" min="0" value="0" inputmode="numeric"></div>
     </div>
 
+    <!-- ================= STATS & CHART ================= -->
+    <div class="card" id="statsCard">
+      <p class="sec-title"><span>📈 Thống kê & Biểu đồ điểm</span><span id="statsSub" style="font-weight:500;text-transform:none"></span></p>
+      <div id="statsEmpty" class="empty">Hoàn thành ít nhất 1 bài làm để xem thống kê & biểu đồ tiến độ</div>
+      <div id="statsBody" class="hidden">
+        <div class="kpi-grid">
+          <div class="kpi"><b id="kTotal">0</b><span>Số bài</span></div>
+          <div class="kpi"><b id="kAvg">0đ</b><span>Điểm TB</span></div>
+          <div class="kpi"><b id="kBest">0đ</b><span>Cao nhất</span></div>
+          <div class="kpi"><b id="kPace">0s</b><span>TB / 1 câu</span></div>
+        </div>
+        <div class="chart-bar">
+          <div class="seg" id="chartScale">
+            <button data-s="10" class="on">Thang 10đ</button>
+            <button data-s="100">Tỷ lệ %</button>
+          </div>
+          <div class="seg" id="chartRange">
+            <button data-r="10" class="on">10 bài</button>
+            <button data-r="20">20 bài</button>
+            <button data-r="0">Tất cả</button>
+          </div>
+        </div>
+        <div class="chart-wrap" id="chartWrap"></div>
+        <div class="chart-tip hidden" id="chartTip"></div>
+      </div>
+    </div>
+
+    <!-- ================= HISTORY ================= -->
+    <div class="card" id="histCard">
+      <p class="sec-title"><span>🕘 Lịch sử làm bài <span id="histCount"></span></span><button id="histClearBtn">Xoá tất cả</button></p>
+      <div id="histList"><div class="empty">Chưa có lần làm bài nào</div></div>
+      <button class="btn btn-line sm hidden" id="histMoreBtn" style="margin-top:8px">Xem toàn bộ lịch sử</button>
+    </div>
+
     <div class="card" id="syncCard">
       <p class="sec-title">☁️ Đồng bộ giữa các máy</p>
       <div id="syncOff">
-        <p class="note">Đồng bộ thư viện đề, bài đang làm, sổ câu sai và lịch sử qua <b>GitHub Gist riêng tư</b> của bạn. Dán cùng một token trên mọi máy.</p>
+        <p class="note">Đồng bộ thư viện đề, thư mục, bài đang làm, sổ câu sai và lịch sử qua <b>GitHub Gist riêng tư</b> của bạn. Dán cùng một token trên mọi máy.</p>
         <input type="password" class="txt" id="tokenInput" placeholder="Dán GitHub token (ghp_...)" autocomplete="off">
         <button class="btn btn-pri sm" id="connectBtn" style="margin-top:10px">🔗 Kết nối</button>
         <details class="help" style="margin-top:12px">
@@ -340,11 +442,6 @@
       </div>
     </div>
 
-    <div class="card" id="histCard">
-      <p class="sec-title"><span>🕘 Lịch sử làm bài</span><button id="histClearBtn">Xoá</button></p>
-      <div id="histList"><div class="empty">Chưa có lần làm bài nào</div></div>
-    </div>
-
     <details class="card help">
       <summary>ℹ️ Định dạng file JSON hỗ trợ</summary>
       <p>Mỗi câu là một mảng:</p>
@@ -370,6 +467,7 @@
     <button class="icon-btn" id="quitBtn" title="Thoát">✕</button>
     <div class="progress-txt" id="progTxt">Câu 1/1</div>
     <div class="timer" id="timer">⏱ <span id="timerTxt">00:00</span></div>
+    <button class="icon-btn pause-btn" id="pauseBtn" title="Tạm dừng">⏸</button>
     <button class="icon-btn" id="gridBtn" title="Danh sách câu">▦</button>
   </div>
   <div class="pbar"><div id="pbar"></div></div>
@@ -396,13 +494,15 @@
   <div class="appbar"><h1>📊 Kết quả</h1></div>
   <div class="content">
     <div class="card">
-      <div class="ring" id="ring" style="--p:0"><div><div><b id="rPct">0%</b><br><span id="rFrac">0/0 câu</span></div></div></div>
+      <div class="ring" id="ring" style="--p:0"><div><div><b id="rScore">0đ</b><br><span id="rFrac">0% • 0/0 câu</span></div></div></div>
       <div class="verdict" id="verdict"></div>
       <div class="stats">
         <div class="stat ok"><b id="sOk">0</b><span>Câu đúng</span></div>
         <div class="stat bad"><b id="sBad">0</b><span>Câu sai</span></div>
         <div class="stat mu"><b id="sSkip">0</b><span>Chưa làm</span></div>
-        <div class="stat pr"><b id="sTime">00:00</b><span>Thời gian</span></div>
+        <div class="stat pr"><b id="sPct">0%</b><span>Tỷ lệ đúng</span></div>
+        <div class="stat pr"><b id="sTime">00:00</b><span>Tổng thời gian</span></div>
+        <div class="stat wn"><b id="sAvg">0s</b><span id="sAvgLbl">TB / 1 câu</span></div>
       </div>
     </div>
 
@@ -435,6 +535,18 @@
       <button data-f="wrong" class="on">Sai & chưa làm</button>
       <button data-f="all">Tất cả</button>
     </div>
+    <div class="rv-bar hidden" id="rvManageBar">
+      <input type="search" class="txt" id="rvSearch" placeholder="🔍 Tìm câu hỏi cần xem hoặc xoá...">
+      <div class="rv-bar-actions">
+        <label style="display:inline-flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;cursor:pointer">
+          <span class="ck"><input type="checkbox" id="rvSelAll"><span></span></span> Chọn tất cả
+        </label>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <button class="chip-btn" id="rvRunSelBtn" disabled>🔁 Luyện đã chọn (0)</button>
+          <button class="chip-btn" id="rvDelSelBtn" style="background:var(--bad-soft);color:var(--bad)" disabled>🗑 Xoá đã chọn (0)</button>
+        </div>
+      </div>
+    </div>
     <div id="rvList"></div>
   </div>
 </section>
@@ -448,9 +560,10 @@ const OLD_LS_KEY = 'jsonquiz_v1', LS_FALLBACK = 'jsonquiz_v2', SYNC_KEY = 'jsonq
 const DEF_OPTS = { shuffleQ: false, shuffleA: false, limit: 0, count: 0, incBank: false };
 
 /* Whole app state – this object is what gets saved locally and synced */
-let DB = { v: 2, lib: [], bank: {}, hist: [], S: null, sT: 0, opts: { ...DEF_OPTS }, optsT: 0 };
+let DB = { v: 2, lib: [], folders: [], bank: {}, hist: [], S: null, sT: 0, opts: { ...DEF_OPTS }, optsT: 0 };
 let runStart = null;          // when the timer (re)started on this device
-let tick = null, rvFilter = 'wrong', rvMode = 'session', rvFrom = 'result';
+let tick = null, rvFilter = 'wrong', rvMode = 'session', rvFrom = 'result', rvHistEntry = null, rvFileId = '';
+let chartScale = 10, chartRange = 10, chartSelIdx = -1, showAllHist = false, bankInlineOpen = false;
 
 /* ================= Utils ================= */
 const now = () => Date.now();
@@ -458,6 +571,13 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt
 const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0; [a[i], a[j]] = [a[j], a[i]]; } return a; };
 const fmt = sec => { sec = Math.max(0, Math.round(sec)); const h = sec / 3600 | 0, m = (sec % 3600) / 60 | 0, s = sec % 60;
   return (h ? h + ':' + String(m).padStart(2,'0') : String(m).padStart(2,'0')) + ':' + String(s).padStart(2,'0'); };
+const fmtAvg = sec => {
+  if (!sec || sec <= 0) return '0s';
+  if (sec < 60) return (sec < 10 ? Math.round(sec * 10) / 10 : Math.round(sec)) + 's';
+  const m = sec / 60 | 0, s = Math.round(sec % 60);
+  return m + 'p' + (s ? ' ' + s + 's' : '');
+};
+const fmtScore10 = (ok, n) => n ? (Math.round(ok / n * 100) / 10).toFixed(1).replace(/\.0$/, '') : '0';
 const fmtDate = t => { const d = new Date(t); return d.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' }) + ' ' + d.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }); };
 const hash = s => { let h = 0x811c9dc5; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193); } return (h >>> 0).toString(36); };
 const uid = () => now().toString(36) + Math.random().toString(36).slice(2, 7);
@@ -483,6 +603,24 @@ function confirmBox(title, text, okText = 'Đồng ý', cancelText = 'Huỷ') {
     document.body.appendChild(o);
   });
 }
+function promptBox(title, placeholder, defVal = '', okText = 'Lưu') {
+  return new Promise(res => {
+    const o = document.createElement('div'); o.className = 'overlay center';
+    o.innerHTML = `<div class="modal"><h3>${esc(title)}</h3>
+      <input type="text" class="txt" id="pmpIn" placeholder="${esc(placeholder)}" value="${esc(defVal)}" style="margin-top:8px">
+      <div class="acts"><button class="btn btn-line" data-v="0">Huỷ</button>
+      <button class="btn btn-pri" data-v="1">${esc(okText)}</button></div></div>`;
+    const inp = o.querySelector('#pmpIn');
+    const done = ok => { const v = inp.value.trim(); o.remove(); res(ok && v ? v : null); };
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') done(true); });
+    o.addEventListener('click', e => {
+      const b = e.target.closest('[data-v]');
+      if (b) done(b.dataset.v === '1'); else if (e.target === o) done(false);
+    });
+    document.body.appendChild(o);
+    setTimeout(() => { inp.focus(); inp.select(); }, 30);
+  });
+}
 const visible = id => !$('#' + id).classList.contains('hidden');
 function show(id) {
   ['home','quiz','result','review'].forEach(s => $('#' + s).classList.toggle('hidden', s !== id));
@@ -502,7 +640,7 @@ const idb = (() => {
     set: async (k, v) => { const db = await open(); return new Promise((res, rej) => { const tx = db.transaction('kv', 'readwrite'); tx.objectStore('kv').put(v, k); tx.oncomplete = () => res(); tx.onerror = () => rej(tx.error); }); }
   };
 })();
-function commitTimer() {           // fold running time into the session
+function commitTimer() {
   if (DB.S && runStart) { DB.S.acc = elapsed(); runStart = now(); }
 }
 let persistT = 0;
@@ -515,7 +653,6 @@ function persistNow() {
   idb.set('state', data).catch(() => {});
 }
 function persist() { clearTimeout(persistT); persistT = setTimeout(persistNow, 250); }
-/** call after any data change: saves locally + schedules cloud sync */
 function changed() { persist(); scheduleSync(); }
 async function loadLocal() {
   let a = null, b = null;
@@ -523,10 +660,9 @@ async function loadLocal() {
   try { const r = localStorage.getItem(LS_FALLBACK); if (r) b = JSON.parse(r); } catch (e) {}
   const d = a && b ? ((a.savedAt || 0) >= (b.savedAt || 0) ? a : b) : (a || b);
   if (d) {
-    DB = { ...DB, ...d, opts: { ...DEF_OPTS, ...(d.opts || {}) } };
+    DB = { ...DB, ...d, folders: d.folders || [], opts: { ...DEF_OPTS, ...(d.opts || {}) } };
     return;
   }
-  // migrate from the previous version of the app
   try {
     const o = JSON.parse(localStorage.getItem(OLD_LS_KEY) || 'null');
     if (o) {
@@ -603,7 +739,6 @@ function parseData(data) {
 const keyOf = q => q.type + '|' + q.q.trim() + '|' + q.options.join('|');
 const isBackup = d => d && !Array.isArray(d) && typeof d === 'object' && Array.isArray(d.lib) && 'bank' in d;
 
-/** reads quiz files; backup files are merged directly. Returns [{name, questions}] */
 async function readFiles(fileList) {
   const res = [];
   for (const f of fileList) {
@@ -616,19 +751,25 @@ async function readFiles(fileList) {
   return res;
 }
 
-/* ================= Library & wrong-answer notebook ================= */
+/* ================= Library, Folders & Wrong-answer notebook ================= */
 const liveLib = () => DB.lib.filter(f => !f.del);
-function upsertFile(name, questions, sel = true, special = false) {
+const liveFolders = () => (DB.folders || []).filter(fd => !fd.del);
+function createFolder(name) {
+  const fd = { id: 'fd_' + uid(), name: name.trim(), open: true, created: now(), t: now(), del: false };
+  DB.folders.push(fd);
+  return fd;
+}
+function upsertFile(name, questions, sel = true, special = false, folderId = '') {
   const id = (special ? 'w' : 'f') + hash(name + '\n' + questions.map(keyOf).join('\n'));
   const ex = DB.lib.find(f => f.id === id);
-  if (ex && !ex.del) { ex.sel = sel; ex.t = now(); return { entry: ex, existed: true }; }
-  const entry = { id, name, questions, special, sel, added: ex ? ex.added : now(), t: now(), del: false };
+  if (ex && !ex.del) { ex.sel = sel; if (folderId) ex.folderId = folderId; ex.t = now(); return { entry: ex, existed: true }; }
+  const entry = { id, name, questions, special, sel, folderId: folderId || (ex && ex.folderId) || '', added: ex ? ex.added : now(), t: now(), del: false };
   if (ex) Object.assign(ex, entry); else DB.lib.push(entry);
   return { entry: ex || entry, existed: false };
 }
 function removeFile(id) {
   const f = DB.lib.find(x => x.id === id); if (!f) return;
-  Object.assign(f, { del: true, questions: [], sel: false, t: now() });
+  Object.assign(f, { del: true, questions: [], sel: false, folderId: '', t: now() });
 }
 const liveBank = () => Object.values(DB.bank).filter(e => !e.del && e.q);
 function bankRecord(q, correct) {
@@ -637,6 +778,121 @@ function bankRecord(q, correct) {
   else if (e && !e.del) { e.c = (e.c || 0) + 1; e.t = now(); if (e.c >= 2) { e.del = true; e.q = null; } }
 }
 function bankRemove(k) { if (DB.bank[k]) Object.assign(DB.bank[k], { del: true, q: null, t: now() }); }
+
+/* ================= Folder Tool Modals ================= */
+function openGroupModal(editFolderId = '') {
+  const lib = liveLib();
+  if (!lib.length) return toast('Hãy tải ít nhất 1 file JSON lên trước');
+  const folders = liveFolders();
+  const targetFd = editFolderId ? folders.find(x => x.id === editFolderId) : null;
+  const o = document.createElement('div'); o.className = 'overlay center';
+  const preCheck = f => targetFd ? f.folderId === targetFd.id : f.sel;
+  o.innerHTML = `<div class="modal">
+    <h3>📁 ${targetFd ? 'Quản lý thư mục' : 'Gom file vào thư mục'}</h3>
+    <p>${targetFd ? 'Đổi tên hoặc tích chọn các file muốn đưa vào thư mục này:' : 'Đặt tên thư mục mới (hoặc chọn thư mục có sẵn) và tích các file cần gom:'}</p>
+    ${!targetFd && folders.length ? `<label style="font-size:13px;font-weight:600;color:var(--muted)">Chọn thư mục</label>
+      <select class="txt" id="gmSelect" style="margin:4px 0 10px">
+        <option value="">➕ Tạo thư mục mới…</option>
+        ${folders.map(fd => `<option value="${fd.id}">📁 ${esc(fd.name)}</option>`).join('')}
+      </select>` : ''}
+    <div id="gmNameWrap">
+      <label style="font-size:13px;font-weight:600;color:var(--muted)">Tên thư mục</label>
+      <input type="text" class="txt" id="gmName" placeholder="VD: Giải phẫu - Hệ sinh dục" value="${esc(targetFd ? targetFd.name : '')}" style="margin-top:4px">
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+      <label style="font-size:13px;font-weight:600;color:var(--muted)">Chọn các file đề</label>
+      <button type="button" id="gmToggleAll" style="font-size:12.5px;color:var(--pri);font-weight:600">Chọn tất cả</button>
+    </div>
+    <div class="pick-list">
+      ${lib.map(f => {
+        const curFd = folders.find(x => x.id === f.folderId);
+        return `<div class="src" style="padding:8px 0">
+          <label class="ck"><input type="checkbox" class="gm-f" value="${f.id}" ${preCheck(f) ? 'checked' : ''}><span></span></label>
+          <div class="nm"><b>${esc(f.name)}</b><span>${f.questions.length} câu${curFd && (!targetFd || curFd.id !== targetFd.id) ? ' • đang ở 📁 ' + esc(curFd.name) : ''}</span></div>
+        </div>`;
+      }).join('')}
+    </div>
+    <div class="acts">
+      <button class="btn btn-line" data-act="cancel">Huỷ</button>
+      <button class="btn btn-pri" data-act="save">✔ Lưu thư mục</button>
+    </div>
+  </div>`;
+  const selEl = o.querySelector('#gmSelect');
+  const nameWrap = o.querySelector('#gmNameWrap');
+  const nameIn = o.querySelector('#gmName');
+  if (selEl) {
+    selEl.addEventListener('change', () => {
+      nameWrap.classList.toggle('hidden', !!selEl.value);
+    });
+  }
+  o.querySelector('#gmToggleAll').addEventListener('click', () => {
+    const boxes = [...o.querySelectorAll('.gm-f')];
+    const all = boxes.every(b => b.checked);
+    boxes.forEach(b => b.checked = !all);
+  });
+  o.addEventListener('click', e => {
+    if (e.target === o || e.target.closest('[data-act="cancel"]')) { o.remove(); return; }
+    if (e.target.closest('[data-act="save"]')) {
+      let fd = targetFd;
+      if (!fd && selEl && selEl.value) fd = folders.find(x => x.id === selEl.value);
+      if (!fd) {
+        const nm = nameIn.value.trim();
+        if (!nm) { nameIn.focus(); return toast('Hãy nhập tên thư mục'); }
+        fd = createFolder(nm);
+      } else if (targetFd) {
+        const nm = nameIn.value.trim();
+        if (!nm) { nameIn.focus(); return toast('Tên thư mục không được để trống'); }
+        fd.name = nm; fd.t = now();
+      }
+      const picked = new Set([...o.querySelectorAll('.gm-f:checked')].map(b => b.value));
+      lib.forEach(f => {
+        if (picked.has(f.id)) { f.folderId = fd.id; f.t = now(); }
+        else if (targetFd && f.folderId === fd.id) { f.folderId = ''; f.t = now(); }
+      });
+      fd.open = true; fd.t = now();
+      o.remove(); changed(); renderHome();
+      toast(`✅ Đã lưu thư mục "${fd.name}" (${picked.size} đề)`);
+    }
+  });
+  document.body.appendChild(o);
+  if (!selEl || !selEl.value) setTimeout(() => nameIn.focus(), 40);
+}
+
+function openMoveFileModal(fileId) {
+  const f = DB.lib.find(x => x.id === fileId); if (!f) return;
+  const folders = liveFolders();
+  const o = document.createElement('div'); o.className = 'overlay center';
+  o.innerHTML = `<div class="modal">
+    <h3>📁 Chuyển thư mục</h3>
+    <p>Chọn thư mục cho đề <b>${esc(f.name)}</b>:</p>
+    <div class="stack" style="gap:8px">
+      ${folders.map(fd => `<button class="btn ${f.folderId === fd.id ? 'btn-pri' : 'btn-line'} sm" data-fd="${fd.id}">📁 ${esc(fd.name)}</button>`).join('')}
+      <button class="btn btn-soft sm" data-fd="__new">➕ Tạo thư mục mới cho đề này…</button>
+      ${f.folderId ? `<button class="btn btn-line sm" data-fd="__none">📤 Đưa ra ngoài (không thuộc thư mục)</button>` : ''}
+      <button class="btn btn-line sm" data-fd="__cancel">Đóng</button>
+    </div>
+  </div>`;
+  o.addEventListener('click', async e => {
+    if (e.target === o) { o.remove(); return; }
+    const b = e.target.closest('[data-fd]'); if (!b) return;
+    const v = b.dataset.fd;
+    o.remove();
+    if (v === '__cancel') return;
+    if (v === '__none') { f.folderId = ''; f.t = now(); changed(); renderHome(); toast('Đã đưa file ra ngoài thư mục'); return; }
+    if (v === '__new') {
+      const nm = await promptBox('Tạo thư mục mới', 'Nhập tên thư mục');
+      if (!nm) return;
+      const fd = createFolder(nm);
+      f.folderId = fd.id; f.t = now(); changed(); renderHome();
+      toast(`✅ Đã chuyển vào "${fd.name}"`);
+      return;
+    }
+    f.folderId = v; f.t = now(); changed(); renderHome();
+    const fd = folders.find(x => x.id === v);
+    if (fd) toast(`✅ Đã chuyển vào "${fd.name}"`);
+  });
+  document.body.appendChild(o);
+}
 
 /* ================= Home ================= */
 function readOptsFromUI() {
@@ -657,23 +913,66 @@ function selectedQuestions() {
   if (DB.opts.incBank) liveBank().forEach(e => add(e.q));
   return out;
 }
+function renderFileRow(f) {
+  return `<div class="src ${f.special ? 'special' : ''}">
+    <label class="ck"><input type="checkbox" data-sel="${f.id}" ${f.sel ? 'checked' : ''}><span></span></label>
+    <div class="nm" data-fview="${f.id}" style="cursor:pointer"><b>${esc(f.name)}</b><span>${f.questions.length} câu • ${f.questions.filter(q=>q.type==='mc').length} trắc nghiệm, ${f.questions.filter(q=>q.type==='tf').length} đúng/sai</span></div>
+    <button class="ibtn" data-fview="${f.id}" title="Xem & xoá bớt câu trong đề">👁</button>
+    <button class="ibtn" data-mv="${f.id}" title="Chuyển thư mục">📁</button>
+    <button class="ibtn" data-rm="${f.id}" title="Xoá khỏi thư viện">🗑</button>
+  </div>`;
+}
 function renderHome() {
   writeOptsToUI();
-  const lib = liveLib();
-  $('#libCount').textContent = lib.length ? `(${lib.length})` : '';
+  const lib = liveLib(), folders = liveFolders(), validFds = new Set(folders.map(x => x.id));
+  $('#libCount').textContent = lib.length ? `(${lib.length} đề${folders.length ? ' • ' + folders.length + ' thư mục' : ''})` : '';
   $('#selAllBtn').classList.toggle('hidden', lib.length < 2);
   $('#selAllBtn').textContent = lib.every(f => f.sel) ? 'Bỏ chọn tất cả' : 'Chọn tất cả';
-  $('#srcList').innerHTML = !lib.length ? '<div class="empty">Chưa có file nào — tải file JSON ở trên</div>' :
-    lib.map(f => `
-    <div class="src ${f.special ? 'special' : ''}">
-      <label class="ck"><input type="checkbox" data-sel="${f.id}" ${f.sel ? 'checked' : ''}><span></span></label>
-      <div class="nm"><b>${esc(f.name)}</b><span>${f.questions.length} câu • ${f.questions.filter(q=>q.type==='mc').length} trắc nghiệm, ${f.questions.filter(q=>q.type==='tf').length} đúng/sai</span></div>
-      <button class="rm" data-rm="${f.id}" title="Xoá khỏi thư viện">🗑</button>
-    </div>`).join('');
+  $('#libTools').classList.toggle('hidden', !lib.length && !folders.length);
+
+  if (!lib.length && !folders.length) {
+    $('#srcList').innerHTML = '<div class="empty">Chưa có file nào — tải file JSON ở trên</div>';
+  } else {
+    let html = '';
+    folders.forEach(fd => {
+      const files = lib.filter(f => f.folderId === fd.id);
+      const qCount = files.reduce((s, f) => s + f.questions.length, 0);
+      const selCount = files.filter(f => f.sel).length;
+      const allSel = files.length > 0 && selCount === files.length;
+      const partSel = selCount > 0 && selCount < files.length;
+      html += `<div class="folder-box ${fd.open === false ? 'closed' : ''}" data-fbox="${fd.id}">
+        <div class="folder-head">
+          <label class="ck"><input type="checkbox" data-fdsel="${fd.id}" ${allSel ? 'checked' : ''} class="${partSel ? 'part' : ''}"><span></span></label>
+          <button class="folder-toggle" data-fdtog="${fd.id}">
+            <span class="arw">▾</span>
+            <div class="fnm"><b>📁 ${esc(fd.name)}</b><span>${files.length} đề • ${qCount} câu</span></div>
+          </button>
+          <div class="folder-acts">
+            <button data-fdedit="${fd.id}" title="Thêm/bớt file & đổi tên">✏️</button>
+            <button data-fdel="${fd.id}" title="Xoá thư mục">🗑</button>
+          </div>
+        </div>
+        <div class="folder-body">
+          ${files.length ? files.map(renderFileRow).join('') : '<div class="empty" style="font-size:13px">Thư mục trống — bấm ✏️ để thêm đề vào</div>'}
+        </div>
+      </div>`;
+    });
+    const loose = lib.filter(f => !f.folderId || !validFds.has(f.folderId));
+    if (loose.length && folders.length) {
+      html += `<div style="font-size:12px;font-weight:700;color:var(--muted);margin:10px 0 2px;text-transform:uppercase">Chưa phân loại (${loose.length})</div>`;
+    }
+    html += loose.map(renderFileRow).join('');
+    $('#srcList').innerHTML = html;
+  }
 
   const bankN = liveBank().length;
   $('#bankNum').textContent = bankN;
-  $('#bankPracticeBtn').disabled = !bankN; $('#bankClearBtn').disabled = !bankN; $('#bankViewBtn').disabled = !bankN;
+  $('#bankPracticeBtn').disabled = !bankN; $('#bankClearBtn').disabled = !bankN;
+  $('#bankViewBtn').disabled = !bankN; $('#bankToggleBtn').disabled = !bankN;
+  if (!bankN) bankInlineOpen = false;
+  $('#bankToggleBtn').textContent = bankInlineOpen ? '▲ Thu gọn danh sách' : `📂 Mở danh sách & xoá câu (${bankN})`;
+  $('#bankInline').classList.toggle('hidden', !bankInlineOpen || !bankN);
+  if (bankInlineOpen && bankN) renderBankInline();
 
   const total = selectedQuestions().length, n = Math.min(total, DB.opts.count || total);
   $('#startBtn').disabled = !total;
@@ -686,15 +985,169 @@ function renderHome() {
     $('#resumeMeta').textContent = `${S.title ? S.title + ' • ' : ''}Đã làm ${done}/${S.items.length} câu • ${fmt(S.acc)}`;
   } else rc.classList.add('hidden');
 
-  $('#histList').innerHTML = !DB.hist.length ? '<div class="empty">Chưa có lần làm bài nào</div>' :
-    DB.hist.slice(0, 15).map(h => {
-      const p = h.n ? Math.round(h.ok / h.n * 100) : 0;
-      return `<div class="hist"><div class="pct ${p >= 75 ? 'g' : p >= 50 ? 'm' : 'b'}">${p}%</div>
-        <div class="nm"><b>${esc(h.title || 'Bài làm')}</b><span>${fmtDate(h.at)} • đúng ${h.ok}/${h.n} • ${fmt(h.time)}</span></div></div>`;
-    }).join('');
-  $('#histClearBtn').classList.toggle('hidden', !DB.hist.length);
+  renderStatsAndChart();
+  renderHistoryList();
   renderSyncUI();
 }
+
+/* ================= Stats & Score Chart ================= */
+function renderStatsAndChart() {
+  const hist = DB.hist || [];
+  $('#statsEmpty').classList.toggle('hidden', hist.length > 0);
+  $('#statsBody').classList.toggle('hidden', !hist.length);
+  $('#statsSub').textContent = hist.length ? `${hist.length} lần làm` : '';
+  if (!hist.length) return;
+
+  const scores10 = hist.map(h => h.n ? h.ok / h.n * 10 : 0);
+  const pcts = hist.map(h => h.n ? h.ok / h.n * 100 : 0);
+  const avg10 = scores10.reduce((a, b) => a + b, 0) / hist.length;
+  const best10 = Math.max(...scores10);
+  let totAns = 0, totSec = 0;
+  hist.forEach(h => {
+    const d = (h.ok || 0) + (h.bad || 0) || h.n || 1;
+    totAns += d; totSec += (h.time || 0);
+  });
+  const avgPace = totAns ? totSec / totAns : 0;
+
+  $('#kTotal').textContent = hist.length;
+  $('#kAvg').textContent = chartScale === 10 ? avg10.toFixed(1).replace(/\.0$/, '') + 'đ' : Math.round(avg10 * 10) + '%';
+  $('#kBest').textContent = chartScale === 10 ? best10.toFixed(1).replace(/\.0$/, '') + 'đ' : Math.round(best10 * 10) + '%';
+  $('#kPace').textContent = fmtAvg(avgPace);
+
+  // Prepare chronological series (oldest -> newest)
+  const slice = (chartRange > 0 ? hist.slice(0, chartRange) : hist.slice()).reverse();
+  if (chartSelIdx < 0 || chartSelIdx >= slice.length) chartSelIdx = slice.length - 1;
+
+  const maxVal = chartScale === 10 ? 10 : 100;
+  const vals = slice.map(h => h.n ? (chartScale === 10 ? +(h.ok / h.n * 10).toFixed(1) : Math.round(h.ok / h.n * 100)) : 0);
+  const avgVal = vals.reduce((a, b) => a + b, 0) / vals.length;
+
+  const W = Math.max(320, slice.length * 44), H = 185;
+  const padL = 32, padR = 18, padT = 22, padB = 28;
+  const plotW = W - padL - padR, plotH = H - padT - padB;
+  const xAt = i => slice.length === 1 ? padL + plotW / 2 : padL + (i / (slice.length - 1)) * plotW;
+  const yAt = v => padT + plotH - (Math.max(0, Math.min(maxVal, v)) / maxVal) * plotH;
+
+  const pts = vals.map((v, i) => [xAt(i), yAt(v)]);
+  const linePath = pts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ');
+  const areaPath = pts.length > 1
+    ? `${linePath} L${pts[pts.length - 1][0].toFixed(1)},${(padT + plotH).toFixed(1)} L${pts[0][0].toFixed(1)},${(padT + plotH).toFixed(1)} Z`
+    : '';
+  const yAvg = yAt(avgVal);
+
+  const gridSteps = chartScale === 10 ? [0, 2.5, 5, 7.5, 10] : [0, 25, 50, 75, 100];
+  const gridHtml = gridSteps.map(g => {
+    const y = yAt(g).toFixed(1);
+    return `<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="var(--line)" stroke-dasharray="${g === 0 ? '' : '3,3'}" stroke-width="1"/>
+      <text x="${padL - 6}" y="${+y + 4}" text-anchor="end" font-size="10.5" fill="var(--muted)">${g}${chartScale === 100 ? '%' : ''}</text>`;
+  }).join('');
+
+  const dotsHtml = pts.map(([x, y], i) => {
+    const v = vals[i], pct = slice[i].n ? slice[i].ok / slice[i].n * 100 : 0;
+    const col = pct >= 75 ? 'var(--ok)' : pct >= 50 ? 'var(--warn)' : 'var(--bad)';
+    const sel = i === chartSelIdx;
+    return `<g class="cpt" data-ci="${i}" style="cursor:pointer">
+      <circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="15" fill="transparent"/>
+      ${sel ? `<line x1="${x.toFixed(1)}" y1="${padT}" x2="${x.toFixed(1)}" y2="${padT + plotH}" stroke="var(--pri)" stroke-dasharray="2,2" stroke-width="1.2"/>
+      <circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="8" fill="var(--pri-soft)" stroke="var(--pri)" stroke-width="1.5"/>` : ''}
+      <circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${sel ? 5 : 4}" fill="${col}" stroke="var(--card)" stroke-width="1.5"/>
+      <text x="${x.toFixed(1)}" y="${(y - 9).toFixed(1)}" text-anchor="middle" font-size="10.5" font-weight="700" fill="var(--text)">${v}${chartScale === 100 ? '%' : ''}</text>
+      <text x="${x.toFixed(1)}" y="${H - 8}" text-anchor="middle" font-size="10" fill="${sel ? 'var(--pri)' : 'var(--muted)'}" font-weight="${sel ? '700' : '400'}">#${i + 1}</text>
+    </g>`;
+  }).join('');
+
+  $('#chartWrap').innerHTML = `<svg viewBox="0 0 ${W} ${H}" style="min-width:${W}px">
+    <defs><linearGradient id="cGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="var(--pri)" stop-opacity="0.28"/>
+      <stop offset="100%" stop-color="var(--pri)" stop-opacity="0.0"/>
+    </linearGradient></defs>
+    ${gridHtml}
+    <line x1="${padL}" y1="${yAvg.toFixed(1)}" x2="${W - padR}" y2="${yAvg.toFixed(1)}" stroke="var(--pri)" stroke-dasharray="5,4" stroke-width="1.2" opacity="0.7"/>
+    ${areaPath ? `<path d="${areaPath}" fill="url(#cGrad)"/>` : ''}
+    ${pts.length > 1 ? `<path d="${linePath}" fill="none" stroke="var(--pri)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>` : ''}
+    ${dotsHtml}
+  </svg>`;
+
+  const h = slice[chartSelIdx];
+  if (h) {
+    const sc10 = fmtScore10(h.ok, h.n), pct = h.n ? Math.round(h.ok / h.n * 100) : 0;
+    const ansCnt = (h.ok || 0) + (h.bad || 0) || h.n || 1;
+    const avgS = h.avgTime || (h.time || 0) / ansCnt;
+    const tip = $('#chartTip');
+    tip.classList.remove('hidden');
+    tip.innerHTML = `<div><b>#${chartSelIdx + 1} • ${esc(h.title || 'Bài làm')}</b><br>
+      <span style="color:var(--muted);font-size:12.5px">${fmtDate(h.at)} • Đúng ${h.ok}/${h.n} • Tổng ${fmt(h.time)} • ⚡ TB ${fmtAvg(avgS)}/câu</span></div>
+      <div style="text-align:right"><b>${sc10}đ</b> (${pct}%)</div>`;
+  }
+}
+
+$('#chartScale').addEventListener('click', e => {
+  const b = e.target.closest('[data-s]'); if (!b) return;
+  chartScale = +b.dataset.s;
+  document.querySelectorAll('#chartScale button').forEach(x => x.classList.toggle('on', x === b));
+  renderStatsAndChart();
+});
+$('#chartRange').addEventListener('click', e => {
+  const b = e.target.closest('[data-r]'); if (!b) return;
+  chartRange = +b.dataset.r; chartSelIdx = -1;
+  document.querySelectorAll('#chartRange button').forEach(x => x.classList.toggle('on', x === b));
+  renderStatsAndChart();
+});
+$('#chartWrap').addEventListener('click', e => {
+  const g = e.target.closest('[data-ci]'); if (!g) return;
+  chartSelIdx = +g.dataset.ci;
+  renderStatsAndChart();
+});
+
+/* ================= History List ================= */
+function renderHistoryList() {
+  const hist = DB.hist || [];
+  $('#histCount').textContent = hist.length ? `(${hist.length})` : '';
+  $('#histClearBtn').classList.toggle('hidden', !hist.length);
+  const moreBtn = $('#histMoreBtn');
+  moreBtn.classList.toggle('hidden', hist.length <= 6);
+  if (hist.length > 6) moreBtn.textContent = showAllHist ? 'Thu gọn lịch sử' : `Xem toàn bộ lịch sử (${hist.length} bài)`;
+
+  if (!hist.length) {
+    $('#histList').innerHTML = '<div class="empty">Chưa có lần làm bài nào</div>';
+    return;
+  }
+  const view = showAllHist ? hist : hist.slice(0, 6);
+  $('#histList').innerHTML = view.map((h, idx) => {
+    const p = h.n ? Math.round(h.ok / h.n * 100) : 0;
+    const sc10 = fmtScore10(h.ok, h.n);
+    const ansCnt = (h.ok || 0) + (h.bad || 0) || h.n || 1;
+    const avgS = h.avgTime ?? ((h.time || 0) / ansCnt);
+    return `<div class="hist">
+      <div class="pct ${p >= 75 ? 'g' : p >= 50 ? 'm' : 'b'}">${sc10}đ<small>${p}%</small></div>
+      <div class="nm">
+        <b>${esc(h.title || 'Bài làm')}</b>
+        <span>${fmtDate(h.at)} • Đúng ${h.ok}/${h.n}${h.skip ? ` (bỏ ${h.skip})` : ''}</span>
+        <span>⏱ Tổng ${fmt(h.time)} • ⚡ TB ${fmtAvg(avgS)}/câu</span>
+      </div>
+      <div class="hacts">
+        ${h.items && h.items.length ? `<button class="hbtn" data-hrv="${idx}" title="Xem lại bài này">🔍 Xem</button>` : ''}
+        <button class="hbtn del" data-hdel="${idx}" title="Xoá mục này">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+$('#histMoreBtn').addEventListener('click', () => { showAllHist = !showAllHist; renderHistoryList(); });
+$('#histList').addEventListener('click', async e => {
+  const rv = e.target.closest('[data-hrv]');
+  if (rv) {
+    const h = DB.hist[+rv.dataset.hrv];
+    if (h && h.items) { rvMode = 'hist'; rvHistEntry = h; rvFrom = 'home'; renderReview(); show('review'); }
+    return;
+  }
+  const del = e.target.closest('[data-hdel]');
+  if (del) {
+    const idx = +del.dataset.hdel;
+    if (!await confirmBox('Xoá mục lịch sử này?', 'Mục này sẽ bị xoá khỏi lịch sử và biểu đồ.', 'Xoá')) return;
+    DB.hist.splice(idx, 1); chartSelIdx = -1; changed(); renderHome();
+  }
+});
+
 async function addFiles(files) {
   const res = await readFiles(files);
   if (res.length) {
@@ -710,12 +1163,52 @@ const drop = $('#drop');
 ['dragenter','dragover'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('over'); }));
 ['dragleave','drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('over'); }));
 drop.addEventListener('drop', e => addFiles([...e.dataTransfer.files]));
+
+$('#groupFolderBtn').addEventListener('click', () => openGroupModal());
+$('#newFolderBtn').addEventListener('click', async () => {
+  const nm = await promptBox('➕ Tạo thư mục mới', 'Nhập tên thư mục (VD: Giải phẫu, Sinh lý…)');
+  if (!nm) return;
+  createFolder(nm); changed(); renderHome();
+  toast(`✅ Đã tạo thư mục "${nm}"`);
+});
+
 $('#srcList').addEventListener('change', e => {
+  const fdCk = e.target.closest('[data-fdsel]');
+  if (fdCk) {
+    const fdId = fdCk.dataset.fdsel, v = fdCk.checked;
+    liveLib().filter(f => f.folderId === fdId).forEach(f => { f.sel = v; f.t = now(); });
+    changed(); renderHome(); return;
+  }
   const c = e.target.closest('[data-sel]'); if (!c) return;
   const f = DB.lib.find(x => x.id === c.dataset.sel); if (!f) return;
   f.sel = c.checked; f.t = now(); changed(); renderHome();
 });
 $('#srcList').addEventListener('click', async e => {
+  const tog = e.target.closest('[data-fdtog]');
+  if (tog) {
+    const fd = DB.folders.find(x => x.id === tog.dataset.fdtog);
+    if (fd) { fd.open = fd.open === false; fd.t = now(); persist(); renderHome(); }
+    return;
+  }
+  const ed = e.target.closest('[data-fdedit]');
+  if (ed) { openGroupModal(ed.dataset.fdedit); return; }
+  const fdel = e.target.closest('[data-fdel]');
+  if (fdel) {
+    const fd = DB.folders.find(x => x.id === fdel.dataset.fdel); if (!fd) return;
+    const files = liveLib().filter(f => f.folderId === fd.id);
+    if (!await confirmBox(`Xoá thư mục "${fd.name}"?`, files.length ? `${files.length} đề bên trong sẽ được giữ lại và đưa ra ngoài thư mục.` : 'Thư mục trống này sẽ bị xoá.', 'Xoá thư mục')) return;
+    files.forEach(f => { f.folderId = ''; f.t = now(); });
+    Object.assign(fd, { del: true, t: now() });
+    changed(); renderHome(); return;
+  }
+  const fv = e.target.closest('[data-fview]');
+  if (fv) {
+    rvMode = 'file'; rvFileId = fv.dataset.fview; rvFrom = 'home';
+    $('#rvSearch').value = ''; rvChecked.clear();
+    renderReview(); show('review'); return;
+  }
+  const mv = e.target.closest('[data-mv]');
+  if (mv) { openMoveFileModal(mv.dataset.mv); return; }
   const b = e.target.closest('[data-rm]'); if (!b) return;
   const f = DB.lib.find(x => x.id === b.dataset.rm);
   if (!f || !await confirmBox('Xoá đề này?', `"${f.name}" sẽ bị xoá khỏi thư viện${syncCfg.gistId ? ' trên mọi máy' : ''}.`, 'Xoá')) return;
@@ -739,6 +1232,59 @@ $('#resumeBtn').addEventListener('click', () => { runStart = now(); openQuiz(); 
 $('#discardBtn').addEventListener('click', async () => {
   if (await confirmBox('Huỷ bài đang làm?', 'Tiến độ bài này sẽ bị xoá.', 'Huỷ bài', 'Giữ lại')) { DB.S = null; DB.sT = now(); changed(); renderHome(); }
 });
+let biChecked = new Set();
+function renderBankInline() {
+  const list = liveBank().sort((a, b) => b.w - a.w || b.t - a.t);
+  const validKeys = new Set(list.map(e => keyOf(e.q)));
+  biChecked.forEach(k => { if (!validKeys.has(k)) biChecked.delete(k); });
+  $('#biSelAll').checked = list.length > 0 && biChecked.size === list.length;
+  $('#biDelSelBtn').disabled = !biChecked.size;
+  $('#biDelSelBtn').textContent = `🗑 Xoá đã chọn (${biChecked.size})`;
+  $('#biList').innerHTML = list.map((e, i) => {
+    const q = e.q, k = keyOf(q);
+    const ansTxt = (q.type === 'tf' ? '' : LETTERS[q.answer] + '. ') + q.options[q.answer];
+    return `<div class="bank-item" data-bik="${i}">
+      <label class="ck" style="margin-top:2px"><input type="checkbox" class="bi-ck" data-k="${i}" ${biChecked.has(k) ? 'checked' : ''}><span></span></label>
+      <div class="btxt">
+        <b>#${i + 1}. ${esc(q.q)}</b>
+        <span>✔ Đáp án: ${esc(ansTxt)} (Sai ${e.w} lần)</span>
+      </div>
+      <button class="bdel" data-bdel="${i}">🗑 Xoá</button>
+    </div>`;
+  }).join('');
+  biListKeys = list.map(e => keyOf(e.q));
+}
+let biListKeys = [];
+$('#bankToggleBtn').addEventListener('click', () => {
+  bankInlineOpen = !bankInlineOpen;
+  renderHome();
+});
+$('#biSelAll').addEventListener('change', e => {
+  if (e.target.checked) biListKeys.forEach(k => biChecked.add(k));
+  else biChecked.clear();
+  renderBankInline();
+});
+$('#biList').addEventListener('change', e => {
+  const ck = e.target.closest('.bi-ck'); if (!ck) return;
+  const k = biListKeys[+ck.dataset.k];
+  if (ck.checked) biChecked.add(k); else biChecked.delete(k);
+  $('#biSelAll').checked = biListKeys.length > 0 && biChecked.size === biListKeys.length;
+  $('#biDelSelBtn').disabled = !biChecked.size;
+  $('#biDelSelBtn').textContent = `🗑 Xoá đã chọn (${biChecked.size})`;
+});
+$('#biList').addEventListener('click', e => {
+  const b = e.target.closest('[data-bdel]'); if (!b) return;
+  const k = biListKeys[+b.dataset.bdel];
+  bankRemove(k); biChecked.delete(k); changed(); renderHome();
+  toast('Đã xoá 1 câu khỏi sổ câu sai');
+});
+$('#biDelSelBtn').addEventListener('click', async () => {
+  if (!biChecked.size) return;
+  if (!await confirmBox(`Xoá ${biChecked.size} câu đã chọn?`, 'Các câu này sẽ được xoá khỏi Sổ câu sai.', 'Xoá')) return;
+  biChecked.forEach(k => bankRemove(k));
+  biChecked.clear(); changed(); renderHome();
+  toast('✅ Đã xoá các câu đã chọn');
+});
 $('#bankPracticeBtn').addEventListener('click', async () => {
   const S = DB.S;
   if (S && !S.finished && S.items.some(i => i.chosen != null)) {
@@ -748,15 +1294,18 @@ $('#bankPracticeBtn').addEventListener('click', async () => {
 });
 $('#bankClearBtn').addEventListener('click', async () => {
   if (!await confirmBox('Xoá toàn bộ sổ câu sai?', 'Không thể hoàn tác.', 'Xoá')) return;
-  Object.keys(DB.bank).forEach(bankRemove); changed(); renderHome();
+  Object.keys(DB.bank).forEach(bankRemove); biChecked.clear(); changed(); renderHome();
 });
-$('#bankViewBtn').addEventListener('click', () => { rvMode = 'bank'; rvFrom = 'home'; renderReview(); show('review'); });
+$('#bankViewBtn').addEventListener('click', () => {
+  rvMode = 'bank'; rvFrom = 'home'; $('#rvSearch').value = ''; rvChecked.clear();
+  renderReview(); show('review');
+});
 $('#histClearBtn').addEventListener('click', async () => {
   if (!await confirmBox('Xoá lịch sử làm bài?', 'Không ảnh hưởng thư viện và sổ câu sai.', 'Xoá')) return;
-  DB.hist = []; DB.histClearedT = now(); changed(); renderHome();
+  DB.hist = []; DB.histClearedT = now(); chartSelIdx = -1; changed(); renderHome();
 });
 
-/* ================= Quiz ================= */
+/* ================= Quiz & Pause ================= */
 function startQuiz(questions, title = '') {
   const o = DB.opts;
   let qs = questions.slice();
@@ -795,6 +1344,38 @@ function startTimer() {
   };
   upd(); tick = setInterval(upd, 500);
 }
+
+// Pause button during quiz
+$('#pauseBtn').addEventListener('click', () => {
+  if (!DB.S || DB.S.finished) return;
+  commitTimer(); runStart = null; clearInterval(tick);
+  DB.sT = now(); changed();
+  const S = DB.S, c = counts(), done = c.ok + c.bad;
+  const avgS = done ? S.acc / done : 0;
+  const o = document.createElement('div'); o.className = 'overlay center';
+  o.innerHTML = `<div class="modal" style="text-align:center">
+    <div style="font-size:42px;margin-bottom:4px">⏸</div>
+    <h3>Đang tạm dừng bài làm</h3>
+    <p>${esc(S.title || 'Bài trắc nghiệm')}</p>
+    <div class="stats" style="margin:12px 0 16px">
+      <div class="stat pr"><b>${fmt(S.limit ? Math.max(0, S.limit - S.acc) : S.acc)}</b><span>${S.limit ? 'Còn lại' : 'Thời gian'}</span></div>
+      <div class="stat ok"><b>${done}/${S.items.length}</b><span>Đã làm (✔${c.ok} ✘${c.bad})</span></div>
+      <div class="stat wn"><b>${fmtAvg(avgS)}</b><span>TB / 1 câu</span></div>
+    </div>
+    <div class="stack">
+      <button class="btn btn-pri" data-pa="resume">▶ Tiếp tục làm bài</button>
+      <button class="btn btn-line" data-pa="home">🏠 Lưu & về trang chủ</button>
+    </div>
+  </div>`;
+  o.addEventListener('click', e => {
+    const b = e.target.closest('[data-pa]'); if (!b) return;
+    o.remove();
+    if (b.dataset.pa === 'resume') { runStart = now(); startTimer(); }
+    else { show('home'); renderHome(); }
+  });
+  document.body.appendChild(o);
+});
+
 function counts() {
   let ok = 0, bad = 0;
   DB.S.items.forEach(i => { if (i.chosen != null) (i.chosen === i.q.answer ? ok++ : bad++); });
@@ -864,7 +1445,7 @@ $('#qList').addEventListener('click', e => {
   if (!right && navigator.vibrate) navigator.vibrate(90);
   bankRecord(it.q, right);
   S.cur = i; DB.sT = now();
-  renderCard(i); updateStats(); persist(); scheduleSync(20000);   // answers are batched: at most ~1 upload / 20s
+  renderCard(i); updateStats(); persist(); scheduleSync(20000);
   const fb = card.querySelector('.fb');
   if (fb) setTimeout(() => fb.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 60);
 });
@@ -875,7 +1456,6 @@ function go(i, smooth = true) {
   const el = $('#qc-' + i);
   if (el) el.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto', block: 'start' });
 }
-// Track the question currently at the top of the screen while scrolling
 let scrollRaf = 0;
 window.addEventListener('scroll', () => {
   if (scrollRaf || !DB.S || !visible('quiz')) return;
@@ -901,7 +1481,6 @@ $('#nextBtn').addEventListener('click', () => {
   toast('🎉 Bạn đã làm hết tất cả câu hỏi!');
 });
 
-// Shuffle during quiz: unanswered questions are shuffled, answered ones keep their position
 $('#shuffleBtn').addEventListener('click', () => {
   const S = DB.S;
   const idx = S.items.map((it, i) => it.chosen == null ? i : -1).filter(i => i >= 0);
@@ -918,7 +1497,6 @@ $('#shuffleBtn').addEventListener('click', () => {
   toast(`🔀 Đã xáo trộn ${idx.length} câu chưa làm`);
 });
 
-// Grid sheet
 $('#gridBtn').addEventListener('click', () => {
   const S = DB.S;
   const o = document.createElement('div'); o.className = 'overlay';
@@ -938,7 +1516,7 @@ $('#gridBtn').addEventListener('click', () => {
 });
 
 $('#quitBtn').addEventListener('click', async () => {
-  if (!await confirmBox('Tạm dừng bài làm?', 'Tiến độ được lưu lại, bạn có thể tiếp tục sau (cả trên máy khác nếu đã bật đồng bộ).', 'Thoát', 'Ở lại')) return;
+  if (!await confirmBox('Tạm dừng & thoát?', 'Tiến độ được lưu lại, bạn có thể tiếp tục sau (cả trên máy khác nếu đã bật đồng bộ).', 'Thoát', 'Ở lại')) return;
   commitTimer(); runStart = null; clearInterval(tick); DB.sT = now(); changed(); show('home'); renderHome();
 });
 $('#finishBtn').addEventListener('click', async () => {
@@ -951,19 +1529,34 @@ $('#finishBtn').addEventListener('click', async () => {
 function finish() {
   const S = DB.S;
   commitTimer(); runStart = null; S.finished = true; clearInterval(tick);
-  const c = counts();
-  DB.hist.unshift({ id: S.id || uid(), at: now(), title: S.title || '', n: S.items.length, ok: c.ok, bad: c.bad, skip: c.left, time: Math.round(S.acc) });
+  const c = counts(), done = c.ok + c.bad;
+  const avgTime = Math.round((S.acc / (done || S.items.length || 1)) * 10) / 10;
+  DB.hist.unshift({
+    id: S.id || uid(), at: now(), title: S.title || '', n: S.items.length,
+    ok: c.ok, bad: c.bad, skip: c.left, time: Math.round(S.acc), avgTime,
+    items: S.items.map(it => ({ q: it.q, order: it.order, chosen: it.chosen }))
+  });
   DB.hist = DB.hist.slice(0, 50);
+  // Keep full items only on the 20 most recent history records to keep sync payload compact
+  DB.hist.slice(20).forEach(h => delete h.items);
+  chartSelIdx = -1;
   DB.sT = now(); changed();
   renderResult(); show('result');
 }
 function renderResult() {
   const S = DB.S, c = counts(), n = S.items.length, pct = n ? Math.round(c.ok / n * 100) : 0;
+  const sc10 = fmtScore10(c.ok, n);
+  const done = c.ok + c.bad;
+  const avgS = S.acc / (done || n || 1);
   $('#ring').style.setProperty('--p', 0);
   requestAnimationFrame(() => setTimeout(() => $('#ring').style.setProperty('--p', pct), 50));
-  $('#rPct').textContent = pct + '%';
-  $('#rFrac').textContent = `${c.ok}/${n} câu đúng`;
-  $('#sOk').textContent = c.ok; $('#sBad').textContent = c.bad; $('#sSkip').textContent = c.left; $('#sTime').textContent = fmt(S.acc);
+  $('#rScore').textContent = sc10 + 'đ';
+  $('#rFrac').textContent = `${pct}% • ${c.ok}/${n} câu`;
+  $('#sOk').textContent = c.ok; $('#sBad').textContent = c.bad; $('#sSkip').textContent = c.left;
+  $('#sPct').textContent = pct + '%';
+  $('#sTime').textContent = fmt(S.acc);
+  $('#sAvg').textContent = fmtAvg(avgS);
+  $('#sAvgLbl').textContent = done && done < n ? `TB / câu (${done} câu)` : 'TB / 1 câu';
   $('#verdict').textContent = pct >= 90 ? '🏆 Xuất sắc!' : pct >= 75 ? '🌟 Rất tốt!' : pct >= 50 ? '👍 Khá ổn, cố gắng thêm!' : '💪 Cần ôn tập thêm!';
   const w = wrongQs().length;
   $('#redoWrongBtn').disabled = !w;
@@ -987,7 +1580,7 @@ $('#comboInput').addEventListener('change', async e => {
   const res = await readFiles(files);
   if (!res.length) return;
   const w = wrongQs();
-  liveLib().forEach(f => { if (f.sel) { f.sel = false; f.t = now(); } });     // only the new combo is selected
+  liveLib().forEach(f => { if (f.sel) { f.sel = false; f.t = now(); } });
   if (w.length) upsertFile('Câu sai – ' + fmtDate(now()), w, true, true);
   res.forEach(r => upsertFile(r.name, r.questions, true));
   changed();
@@ -995,31 +1588,73 @@ $('#comboInput').addEventListener('change', async e => {
   toast(`✅ Đã gộp ${w.length} câu sai + ${res.reduce((a, s) => a + s.questions.length, 0)} câu mới`, 2500);
 });
 
-/* ================= Review (session or notebook) ================= */
-let rvBankKeys = [];
+/* ================= Review (session, history item, notebook, or file) ================= */
+let rvBankKeys = [], rvChecked = new Set();
+function updateRvBar() {
+  const n = rvChecked.size;
+  $('#rvSelAll').checked = rvBankKeys.length > 0 && rvBankKeys.every(k => rvChecked.has(k));
+  $('#rvDelSelBtn').disabled = !n;
+  $('#rvDelSelBtn').textContent = `🗑 Xoá đã chọn (${n})`;
+  $('#rvRunSelBtn').disabled = !n;
+  $('#rvRunSelBtn').textContent = `🔁 Luyện đã chọn (${n})`;
+}
 function renderReview() {
-  $('#rvTabs').classList.toggle('hidden', rvMode === 'bank');
-  if (rvMode === 'bank') {
-    $('#rvTitle').textContent = '📕 Sổ câu sai';
-    const list = liveBank().sort((a, b) => b.w - a.w || b.t - a.t);
-    rvBankKeys = list.map(e => keyOf(e.q));
-    $('#rvList').innerHTML = !list.length ? '<div class="card empty">🎉 Sổ câu sai đang trống!</div>' : list.map((e, i) => {
+  const isManage = rvMode === 'bank' || rvMode === 'file';
+  $('#rvTabs').classList.toggle('hidden', isManage);
+  $('#rvManageBar').classList.toggle('hidden', !isManage);
+
+  if (isManage) {
+    const kw = ($('#rvSearch').value || '').trim().toLowerCase();
+    let entries = [];
+    if (rvMode === 'bank') {
+      $('#rvTitle').textContent = `📕 Sổ câu sai (${liveBank().length} câu)`;
+      entries = liveBank().sort((a, b) => b.w - a.w || b.t - a.t).map(e => ({ q: e.q, k: keyOf(e.q), w: e.w, c: e.c }));
+    } else {
+      const f = DB.lib.find(x => x.id === rvFileId);
+      if (!f || f.del) { show('home'); renderHome(); return; }
+      $('#rvTitle').textContent = `📄 ${f.name} (${f.questions.length} câu)`;
+      entries = f.questions.map(q => ({ q, k: keyOf(q) }));
+    }
+    const valid = new Set(entries.map(e => e.k));
+    rvChecked.forEach(k => { if (!valid.has(k)) rvChecked.delete(k); });
+    const filtered = kw ? entries.filter(e => e.q.q.toLowerCase().includes(kw) || e.q.options.some(o => o.toLowerCase().includes(kw)) || (e.q.explain || '').toLowerCase().includes(kw)) : entries;
+    rvBankKeys = filtered.map(e => e.k);
+    updateRvBar();
+
+    if (!filtered.length) {
+      $('#rvList').innerHTML = `<div class="card empty">${entries.length ? 'Không tìm thấy câu hỏi khớp từ khoá' : '🎉 Danh sách đang trống!'}</div>`;
+      return;
+    }
+    $('#rvList').innerHTML = filtered.map((e, i) => {
       const q = e.q;
-      return `<div class="card rv"><div class="q-head"><span class="q-no">#${i + 1}</span>
-        <span class="badge bk">Sai ${e.w} lần</span>${e.c ? `<span class="badge">Đúng liên tiếp ${e.c}/2</span>` : ''}</div>
+      const optsHtml = q.options.map((opt, idx) => {
+        const isAns = idx === q.answer;
+        const lt = q.type === 'tf' ? '' : LETTERS[idx] + '. ';
+        return `<div class="ans ${isAns ? 'ok' : 'mu'}">${isAns ? '✔ ' : ''}${lt}${esc(opt)}</div>`;
+      }).join('');
+      return `<div class="card rv">
+        <div class="q-head">
+          <label class="ck"><input type="checkbox" class="rv-ck" data-i="${i}" ${rvChecked.has(e.k) ? 'checked' : ''}><span></span></label>
+          <span class="q-no">#${i + 1}</span>
+          ${e.w ? `<span class="badge bk">Sai ${e.w} lần</span>` : `<span class="badge ${q.type === 'tf' ? 'tf' : ''}">${q.type === 'tf' ? 'Đúng / Sai' : 'Trắc nghiệm'}</span>`}
+          ${e.c ? `<span class="badge">Đúng liên tiếp ${e.c}/2</span>` : ''}
+          <button class="rv-del-btn" data-del="${i}">🗑 Xoá câu này</button>
+        </div>
         <p class="q-text">${esc(q.q)}</p>
-        <div class="ans ok">✔ Đáp án đúng: ${q.type === 'tf' ? '' : LETTERS[q.answer] + '. '}${esc(q.options[q.answer])}</div>
+        ${optsHtml}
         ${q.explain ? `<div class="ex">💬 ${esc(q.explain)}</div>` : ''}
-        <button class="unbank" data-k="${i}">✕ Xoá khỏi sổ</button></div>`;
+      </div>`;
     }).join('');
     return;
   }
-  $('#rvTitle').textContent = 'Xem lại';
-  const S = DB.S;
-  const list = S.items.map((it, i) => ({ it, i })).filter(({ it }) => rvFilter === 'all' || it.chosen == null || it.chosen !== it.q.answer);
+
+  const src = rvMode === 'hist' ? rvHistEntry : DB.S;
+  $('#rvTitle').textContent = rvMode === 'hist' ? ('Xem lại: ' + (src.title || 'Bài làm')) : 'Xem lại';
+  const list = src.items.map((it, i) => ({ it, i })).filter(({ it }) => rvFilter === 'all' || it.chosen == null || it.chosen !== it.q.answer);
   if (!list.length) { $('#rvList').innerHTML = '<div class="card empty">🎉 Không có câu sai nào!</div>'; return; }
   $('#rvList').innerHTML = list.map(({ it, i }) => {
-    const q = it.q, L = o => q.type === 'tf' ? '' : LETTERS[it.order.indexOf(o)] + '. ';
+    const q = it.q, order = it.order || q.options.map((_, k) => k);
+    const L = o => q.type === 'tf' ? '' : LETTERS[order.indexOf(o)] + '. ';
     const right = it.chosen === q.answer;
     const your = it.chosen == null ? `<div class="ans mu">⏺ Chưa trả lời</div>`
       : `<div class="ans ${right ? 'ok' : 'bad'}">${right ? '✔' : '✘'} Bạn chọn: ${L(it.chosen)}${esc(q.options[it.chosen])}</div>`;
@@ -1030,9 +1665,55 @@ function renderReview() {
       ${q.explain ? `<div class="ex">💬 ${esc(q.explain)}</div>` : ''}</div>`;
   }).join('');
 }
+function deleteManagedKeys(keys) {
+  const set = new Set(keys);
+  if (rvMode === 'bank') {
+    set.forEach(k => { bankRemove(k); rvChecked.delete(k); biChecked.delete(k); });
+  } else if (rvMode === 'file') {
+    const f = DB.lib.find(x => x.id === rvFileId);
+    if (f) {
+      f.questions = f.questions.filter(q => !set.has(keyOf(q)));
+      f.t = now();
+      if (!f.questions.length) removeFile(f.id);
+    }
+    set.forEach(k => rvChecked.delete(k));
+  }
+  changed(); renderReview();
+}
+$('#rvSearch').addEventListener('input', renderReview);
+$('#rvSelAll').addEventListener('change', e => {
+  if (e.target.checked) rvBankKeys.forEach(k => rvChecked.add(k));
+  else rvBankKeys.forEach(k => rvChecked.delete(k));
+  renderReview();
+});
+$('#rvList').addEventListener('change', e => {
+  const ck = e.target.closest('.rv-ck'); if (!ck) return;
+  const k = rvBankKeys[+ck.dataset.i];
+  if (ck.checked) rvChecked.add(k); else rvChecked.delete(k);
+  updateRvBar();
+});
 $('#rvList').addEventListener('click', e => {
-  const b = e.target.closest('.unbank'); if (!b) return;
-  bankRemove(rvBankKeys[+b.dataset.k]); changed(); renderReview();
+  const b = e.target.closest('[data-del]'); if (!b) return;
+  const k = rvBankKeys[+b.dataset.del];
+  deleteManagedKeys([k]);
+  toast('🗑 Đã xoá câu hỏi');
+});
+$('#rvDelSelBtn').addEventListener('click', async () => {
+  if (!rvChecked.size) return;
+  if (!await confirmBox(`Xoá ${rvChecked.size} câu đã chọn?`, 'Các câu này sẽ bị xoá khỏi danh sách hiện tại.', 'Xoá')) return;
+  const n = rvChecked.size;
+  deleteManagedKeys([...rvChecked]);
+  toast(`✅ Đã xoá ${n} câu hỏi`);
+});
+$('#rvRunSelBtn').addEventListener('click', () => {
+  if (!rvChecked.size) return;
+  let qs = [];
+  if (rvMode === 'bank') qs = liveBank().map(e => e.q).filter(q => rvChecked.has(keyOf(q)));
+  else {
+    const f = DB.lib.find(x => x.id === rvFileId);
+    if (f) qs = f.questions.filter(q => rvChecked.has(keyOf(q)));
+  }
+  if (qs.length) startQuiz(qs, `Luyện ${qs.length} câu đã chọn`);
 });
 $('#reviewBtn').addEventListener('click', () => { rvMode = 'session'; rvFrom = 'result'; renderReview(); show('review'); });
 $('#rvBack').addEventListener('click', () => { show(rvFrom); if (rvFrom === 'home') renderHome(); });
@@ -1046,7 +1727,7 @@ $('#rvTabs').addEventListener('click', e => {
 /* ================= Backup file ================= */
 function exportData() {
   commitTimer();
-  return { v: 2, lib: DB.lib, bank: DB.bank, hist: DB.hist, histClearedT: DB.histClearedT || 0, S: DB.S, sT: DB.sT, opts: DB.opts, optsT: DB.optsT };
+  return { v: 2, lib: DB.lib, folders: DB.folders || [], bank: DB.bank, hist: DB.hist, histClearedT: DB.histClearedT || 0, S: DB.S, sT: DB.sT, opts: DB.opts, optsT: DB.optsT };
 }
 $('#exportBtn').addEventListener('click', () => {
   const blob = new Blob([JSON.stringify(exportData())], { type: 'application/json' });
@@ -1067,9 +1748,12 @@ $('#importInput').addEventListener('change', async e => {
 });
 
 /* ================= Merge (used by sync + backup import) ================= */
-/** merges another copy of the data into DB (newest change wins per item). Returns true if the session was replaced. */
 function mergeInto(r) {
-  // library: per file, newest wins (deletions are kept as tombstones)
+  // folders: newest wins
+  const fm = new Map((DB.folders || []).map(fd => [fd.id, fd]));
+  (r.folders || []).forEach(fd => { const l = fm.get(fd.id); if (!l || (fd.t || 0) > (l.t || 0)) fm.set(fd.id, fd); });
+  DB.folders = [...fm.values()].sort((a, b) => (a.created || 0) - (b.created || 0));
+  // library: per file, newest wins
   const m = new Map(DB.lib.map(f => [f.id, f]));
   (r.lib || []).forEach(f => { const l = m.get(f.id); if (!l || (f.t || 0) > (l.t || 0)) m.set(f.id, f); });
   DB.lib = [...m.values()].sort((a, b) => (a.added || 0) - (b.added || 0));
@@ -1082,7 +1766,7 @@ function mergeInto(r) {
   DB.histClearedT = cleared;
   // options
   if ((r.optsT || 0) > (DB.optsT || 0)) { DB.opts = { ...DEF_OPTS, ...r.opts }; DB.optsT = r.optsT; }
-  // current session: the most recently changed one wins
+  // current session
   if ((r.sT || 0) > (DB.sT || 0)) { DB.S = r.S; DB.sT = r.sT; return true; }
   return false;
 }
@@ -1141,7 +1825,6 @@ function renderSyncUI() {
   dot.className = 'sync-dot ' + (s === 'busy' ? 'busy' : s === 'err' || s === 'offline' ? 'err' : 'ok');
   dot.textContent = s === 'busy' ? '⟳ Đồng bộ' : s === 'err' || s === 'offline' ? '⚠ Chưa đồng bộ' : '☁️ Đã lưu';
 }
-/** schedules a sync; an already-pending earlier sync is kept (throttle, protects GitHub rate limits) */
 let syncDue = 0;
 function scheduleSync(delay = 4000) {
   if (!syncCfg.token || !syncCfg.gistId) return;
@@ -1208,7 +1891,7 @@ window.addEventListener('offline', () => syncCfg.gistId && setSync('offline'));
 window.addEventListener('pagehide', persistNow);
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) { persistNow(); if (syncCfg.gistId) doSync(); }
-  else if (syncCfg.gistId && now() - (syncCfg.last || 0) > 15000) doSync();   // pull changes made on other devices
+  else if (syncCfg.gistId && now() - (syncCfg.last || 0) > 15000) doSync();
 });
 
 (async () => {

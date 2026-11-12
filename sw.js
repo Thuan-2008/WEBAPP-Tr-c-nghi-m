@@ -1,5 +1,5 @@
 // Service worker: lets the app open offline. Network-first so updates show up when online.
-const CACHE = 'jsonquiz-v2';
+const CACHE = 'jsonquiz-v4';
 const ASSETS = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', e => {
